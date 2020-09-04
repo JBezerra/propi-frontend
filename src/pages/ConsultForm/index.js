@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
-import PageBackground from '../../assets/images/consult-form-bg.svg'
 import landingLogoImg from '../../assets/images/landing-logo.svg'
 
 import './styles.css';

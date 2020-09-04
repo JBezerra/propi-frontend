@@ -18,24 +18,61 @@ function ConsultList() {
   const location = useLocation();
   const history = useHistory()
 
-  useEffect(async () => {
+  const [DARFData, setDARFData] = useState({})
+  const [bombermanData, setBombermanData] = useState([])
+  const [ndcImmobileData, setNdcImmobileData] = useState('')
+
+  const [pdfsFileSource, setPdfsFileSource] = useState({})
+
+  let FILE_SOURCE_LIST = {}
+  // const webserviceUrl = 'http://dcba0e7ed745.ngrok.io'
+  const webserviceUrl = 'http://localhost:5000'
+
+
+  useEffect(() => {
     const { sequential, CPF } = location.state;
-    await getImmobileConsult(sequential, CPF)
+    getConsultAndFiles(sequential, CPF);
   }, [location]);
 
+  async function getConsultAndFiles(sequential, CPF) {
+    console.log(sequential, CPF)
+    await getImmobileConsult(sequential, CPF);
 
-  let getImmobileConsult = async (e, sequential, CPF) => {
-    e.preventDefault();
+    FILE_SOURCE_LIST = {
+      'IPTU_NEGATIVE_DEBTS': `${sequential}_IPTUNegativeDebts`,
+      'LABOR_NEGATIVE_DEBTS': `${CPF}_LaborNegativeDebts`,
+      'STATE_NEGATIVE_DEBTS': `${CPF}_StateNegativeDebts`,
+      'JFPE_NEGATIVE_DEBTS': `${CPF}_JFPENegativeDebts`,
+      'TRF5_NEGATIVE_CRIMINALS': `${CPF}_TRF5NegativeCriminals`,
+      'WORKERS_LAWSUIT': `${CPF}_WorkersLawsuit`
+    }
 
-    // 6907954
-    // 89021029472
+    const PDFS_FILE_SOURCE = {
+      'IPTU_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['IPTU_NEGATIVE_DEBTS']}`,
+      'LABOR_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['LABOR_NEGATIVE_DEBTS']}`,
+      'STATE_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['STATE_NEGATIVE_DEBTS']}`,
+      'JFPE_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['JFPE_NEGATIVE_DEBTS']}`,
+      'TRF5_NEGATIVE_CRIMINALS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['TRF5_NEGATIVE_CRIMINALS']}`,
+      'WORKERS_LAWSUIT': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['WORKERS_LAWSUIT']}`
+    }
 
-    const webserviceUrl = 'http://dcba0e7ed745.ngrok.io'
-    const params = { sequential, CPF }
-    let serverRequest = await api.get('/consult', { params });
-    let serverResponse = await serverRequest.data;
+    setPdfsFileSource(PDFS_FILE_SOURCE)
   }
 
+  async function getImmobileConsult(sequential, CPF) {
+    // 6907954
+    // 89021029472 // 13986430415
+    const params = { sequential, CPF }
+    let serverRequest = await api.get('/consult', { params });
+    let response = await serverRequest.data;
+
+    const { darf, bomberman, ndc_immobile } = response;
+
+    setDARFData(darf);
+    setBombermanData(bomberman);
+    setNdcImmobileData(ndc_immobile);
+
+  }
 
   return (
     <div id='page-consult-form' className='container'>
@@ -57,39 +94,39 @@ function ConsultList() {
                   <div className='darf-left-column-content'>
                     <div className='card-text-row'>
                       <strong>Responsável: </strong>
-                      <h6>MARIA DE LOUDES BORBA</h6>
+                      <h6>{DARFData.owner}</h6>
                     </div>
 
                     <div className='card-text-row'>
                       <strong>Receita: </strong>
-                      <h6>MARIA DE LOUDES BORBA</h6>
+                      <h6>{DARFData.receipt}</h6>
                     </div>
 
                     <div className='card-text-row'>
                       <strong>Data limite: </strong>
-                      <h6>MARIA DE LOUDES BORBA</h6>
+                      <h6>R$ {DARFData.due_date}</h6>
                     </div>
                   </div>
 
                   <div className='darf-right-column-content'>
                     <div className='card-text-row'>
                       <strong>Valor principal: </strong>
-                      <h6>R$ 117,44</h6>
+                      <h6>R$ {DARFData.principal}</h6>
                     </div>
 
                     <div className='card-text-row'>
                       <strong>Valor multa: </strong>
-                      <h6>R$ 117,44</h6>
+                      <h6>R$ {DARFData.multa}</h6>
                     </div>
 
                     <div className='card-text-row'>
                       <strong>Valor juros: </strong>
-                      <h6>R$ 117,44</h6>
+                      <h6>R$ {DARFData.juros}</h6>
                     </div>
 
                     <div className='card-text-row'>
                       <strong>Valor total: </strong>
-                      <h6>R$ 117,44</h6>
+                      <h6>R$ {DARFData.total}</h6>
                     </div>
                   </div>
                 </div>
@@ -105,26 +142,24 @@ function ConsultList() {
                 description='Certifica a existência de débitos referentes A Taxa de Prevenção e Extinção de Incêndios (TPEI).'
               >
                 <div className='tpei-content'>
-                  <div className='card-text-row'>
-                    <strong>2016: </strong>
-                    <h6>Sem débitos</h6>
-                  </div>
-                  <div className='card-text-row'>
-                    <strong>2017: </strong>
-                    <h6>Sem débitos</h6>
-                  </div>
-                  <div className='card-text-row'>
-                    <strong>2018: </strong>
-                    <h6>Sem débitos</h6>
-                  </div>
-                  <div className='card-text-row'>
-                    <strong>2019: </strong>
-                    <h6>Sem débitos</h6>
-                  </div>
-                  <div className='card-text-row'>
-                    <strong>2020: </strong>
-                    <h6>Sem débitos</h6>
-                  </div>
+                  {["2016", "2017", "2018", "2019", "2020"].map(year => {
+                    if (bombermanData.includes(year)) {
+                      return (
+                        <div className='card-text-row'>
+                          <strong>{year}</strong>
+                          <h6>Pendente</h6>
+                        </div>
+                      )
+                    }
+                    else {
+                      return (
+                        <div className='card-text-row'>
+                          <strong>{year}</strong>
+                          <h6>Sem débitos</h6>
+                        </div>
+                      )
+                    }
+                  })}
                 </div>
                 <div className='payment-file-button'>
                   <h4>Boleto de pagamento</h4>
@@ -135,6 +170,7 @@ function ConsultList() {
               <CardBox
                 title='Certidão Negativa de Débitos Patrimoniais do Imóvel'
                 description='Certidão de Domínio da União é um documento hábil para o conhecimento da condição de dominialidade de um imóvel em relação à área da União.'
+                staus={ndcImmobileData}
               >
               </CardBox>
             </div>
@@ -144,10 +180,10 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos de IPTU'
                 description='Certifica a existência de débitos referentes ao IPTU do imóvel'
               >
-                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+                <PDFCardContent fileSrc={pdfsFileSource['IPTU_NEGATIVE_DEBTS']} />
               </CardBox>
 
-              <CardBox
+              {/* <CardBox
                 title='Certidão de Inteiro Teor'
                 description='Certidão em inteiro teor, integral ou verbo ad verbum é um documento extraído de um livro de registro que reproduz todas as palavras nele contidas. Certidão de inteiro teor também pode ser uma certidão que apresenta todos os atos praticados e os nomes dos proprietários.'
               >
@@ -181,8 +217,11 @@ function ConsultList() {
                   </div>
 
                 </div>
-              </CardBox>
-
+              </CardBox> */}
+              <br />
+              <br />
+              <br />
+              <br />
             </div>
           </div>
         </div>
@@ -198,14 +237,14 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos Trabalhistas'
                 description='A Certidão será negativa se a pessoa de quem se trata não estiver inscrita como devedora no Banco Nacional de Devedores Trabalhistas. A Certidão será positiva se a pessoa de quem se trata tiver execução definitiva em andamento, já com ordem de pagamento não cumprida.'
               >
-                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+                <PDFCardContent fileSrc={pdfsFileSource['LABOR_NEGATIVE_DEBTS']} />
               </CardBox>
 
               <CardBox
                 title='Certidão Negativa Criminal'
                 description='Constata a existência de ação de natureza criminal contra o CPF/CNPJ apresentado, consultado nos sistemas processuais da respectiva Corte.'
               >
-                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+                <PDFCardContent fileSrc={pdfsFileSource['TRF5_NEGATIVE_CRIMINALS']} />
               </CardBox>
             </div>
 
@@ -214,21 +253,21 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos Estaduais'
                 description='A Certidão Negativa de Débitos é o documento emitido pela Secretaria de Estado da Fazenda dando prova da inexistência de pendências e débitos tributários do contribuinte. Quando constam pendências ou dívidas, a Certidão emitida é a chamada Certidão Positiva de Débitos.'
               >
-                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+                <PDFCardContent fileSrc={pdfsFileSource['STATE_NEGATIVE_DEBTS']} />
               </CardBox>
 
               <CardBox
                 title='Certidão Negativa da Justiça Federal Pernambuco'
                 description='Constata a existência de ação ou execução de natureza criminal, cível e fisca, contra o CPF/CNPJ apresentado, perante na Justiça Federal de 1ª Instância, Seção Judiciária do respectivo Estado, consultado nos registros de distribuição do mesmo.'
               >
-                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+                <PDFCardContent fileSrc={pdfsFileSource['JFPE_NEGATIVE_DEBTS']} />
               </CardBox>
 
               <CardBox
                 title='Certidão de Ações Trabalhistas'
                 description='Certifica que o CPF/CNPJ não consta nas bases processuais do Tribunal Regional do Trabalho, após validado na Receita Federal. A Certidão de Ações Trabalhistas tem validade por 30 dias após sua emissão e não gera os efeitos da Certidão Negativa de Débitos Trabalhistas - CNDT.'
               >
-                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+                <PDFCardContent fileSrc={pdfsFileSource['WORKERS_LAWSUIT']} />
               </CardBox>
 
             </div>

@@ -68,7 +68,7 @@ header img {
 
 .darf-left-column-content {
     display: flex;
-    width: 230px;
+    width: 270px;
     flex-direction: column;
     align-items: flex-start;
 }
