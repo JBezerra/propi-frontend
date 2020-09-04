@@ -5,10 +5,8 @@
     background: var(--color-card-background);
     flex-direction: column;
     align-items: center;
-
     box-shadow: 0px 5px 22px rgba(0, 0, 0, 0.05);
     border-radius: 8px;
-
     margin-bottom: 30px;
 }
 
@@ -38,10 +36,24 @@
     margin-bottom: 15px;
 }
 
-.children-content{
+.children-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
+}
+
+.pendent-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.pendent-container h4 {
+    font: 18px Open Sans;
+    color: var(--color-secundary);
+    margin-left: 5px;
 }

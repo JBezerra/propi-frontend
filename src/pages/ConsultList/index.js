@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faExpand } from '@fortawesome/free-solid-svg-icons'
-import ReactLoading from 'react-loading';
 
 import api from '../../services/api'
 
 import CardBox from '../../components/CardBox'
 import PDFCardContent from '../../components/PDFCardContent'
+import LoadingPage from '../../components/LoadingPage'
 
 import logoImg from '../../assets/images/logo.svg'
 
@@ -23,6 +23,9 @@ function ConsultList() {
   const [ndcImmobileData, setNdcImmobileData] = useState('')
 
   const [pdfsFileSource, setPdfsFileSource] = useState({})
+
+  const [loadingStatus, setLoadingStatus] = useState(true)
+
 
   let FILE_SOURCE_LIST = {}
   // const webserviceUrl = 'http://dcba0e7ed745.ngrok.io'
@@ -57,6 +60,8 @@ function ConsultList() {
     }
 
     setPdfsFileSource(PDFS_FILE_SOURCE)
+
+    setLoadingStatus(false)
   }
 
   async function getImmobileConsult(sequential, CPF) {
@@ -76,6 +81,7 @@ function ConsultList() {
 
   return (
     <div id='page-consult-form' className='container'>
+      {loadingStatus && <LoadingPage />}
       <header>
         <img src={logoImg} alt='Propi' onClick={() => history.push('/')} />
       </header>
@@ -104,7 +110,7 @@ function ConsultList() {
 
                     <div className='card-text-row'>
                       <strong>Data limite: </strong>
-                      <h6>R$ {DARFData.due_date}</h6>
+                      <h6>{DARFData.due_date}</h6>
                     </div>
                   </div>
 
@@ -132,8 +138,8 @@ function ConsultList() {
                 </div>
 
                 <div className='payment-file-button'>
-                  <h4>Boleto de pagamento</h4>
-                  <FontAwesomeIcon icon={faAngleUp} />
+                  {/* <h4>Boleto de pagamento</h4>
+                  <FontAwesomeIcon icon={faAngleUp} /> */}
                 </div>
               </CardBox>
 
@@ -162,15 +168,15 @@ function ConsultList() {
                   })}
                 </div>
                 <div className='payment-file-button'>
-                  <h4>Boleto de pagamento</h4>
-                  <FontAwesomeIcon icon={faAngleUp} />
+                  {/* <h4>Boleto de pagamento</h4>
+                  <FontAwesomeIcon icon={faAngleUp} /> */}
                 </div>
               </CardBox>
 
               <CardBox
                 title='Certidão Negativa de Débitos Patrimoniais do Imóvel'
                 description='Certidão de Domínio da União é um documento hábil para o conhecimento da condição de dominialidade de um imóvel em relação à área da União.'
-                staus={ndcImmobileData}
+                status={ndcImmobileData}
               >
               </CardBox>
             </div>
@@ -246,6 +252,12 @@ function ConsultList() {
               >
                 <PDFCardContent fileSrc={pdfsFileSource['TRF5_NEGATIVE_CRIMINALS']} />
               </CardBox>
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
             </div>
 
             <div className='right-column-area'>

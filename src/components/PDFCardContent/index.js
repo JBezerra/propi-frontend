@@ -14,8 +14,8 @@ const PDFCardContent = ({ fileSrc }) => {
                 </Document>
             </div >
             <div className='modal-pdf-button'>
-                <h6>Expandir documento</h6>
-                <FontAwesomeIcon icon={faExpand} size='xs' />
+                {/* <h6>Expandir documento</h6>
+                <FontAwesomeIcon icon={faExpand} size='xs' /> */}
             </div>
         </div >
     );
