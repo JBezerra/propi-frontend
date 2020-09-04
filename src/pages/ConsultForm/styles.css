@@ -1,0 +1,81 @@
+#page-consult-form-container {
+    background: url('./consult-form-bg.png');
+    max-width: 1440px;
+    width: 1440px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#page-consult-form-container img {
+    margin-top: 91px;
+    margin-bottom: 41px;
+}
+
+#page-consult-form-container h1 {
+    width: 60%;
+    font: bold 40px Open Sans;
+    text-align: center;
+    color: var(--color-text-landing);
+    margin-bottom: 70px;
+}
+
+.inputs-container {
+    width: 55%;
+    height: 90px;
+    background: var(--color-card-background);
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-left: 25px;
+}
+
+.inputs-container hr {
+    border: 1px solid var(--color-line-in-white);
+    height: 70%;
+    margin: 0 30px;
+}
+
+.input-block label {
+    font: bold 16px Open Sans;
+    line-height: 22px;
+}
+
+.input-block input {
+    font: normal 14px Open Sans;
+    width: 200px;
+    height: 25;
+    line-height: 19px;
+    outline: 0;
+    border: 1px solid var(--color-line-white);
+    display: flex;
+    align-items: center;
+}
+
+.submit-button {
+    width: 200px;
+    height: 56px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-secundary);
+    color: var(--color-secundary-complement);
+    border-radius: 46px;
+
+    transition: opacity 300ms;
+    cursor: pointer;
+}
+
+.submit-button:hover{
+    opacity: 0.7;
+}
+
+.submit-button  h3{
+    margin-right: 11px;
+    font: bold 14px Open Sans;
+}

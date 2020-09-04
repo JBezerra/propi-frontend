@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import ReactLoading from 'react-loading';
-import { Document, Page } from 'react-pdf/dist/entry.webpack';
+import { useHistory, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faExpand } from '@fortawesome/free-solid-svg-icons'
+import ReactLoading from 'react-loading';
 
-import axios from 'axios';
+import api from '../../services/api'
 
 import CardBox from '../../components/CardBox'
 import PDFCardContent from '../../components/PDFCardContent'
@@ -14,82 +14,33 @@ import logoImg from '../../assets/images/logo.svg'
 import './styles.css';
 
 function ConsultList() {
-  const [sequencial, setSequencial] = useState('');
-  const [cpf, setCpf] = useState('');
-  const [componentData, setComponentData] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  let startLoading = () => {
-    setLoading(true)
+  const location = useLocation();
+  const history = useHistory()
+
+  useEffect(async () => {
+    const { sequential, CPF } = location.state;
+    await getImmobileConsult(sequential, CPF)
+  }, [location]);
+
+
+  let getImmobileConsult = async (e, sequential, CPF) => {
+    e.preventDefault();
+
+    // 6907954
+    // 89021029472
+
+    const webserviceUrl = 'http://dcba0e7ed745.ngrok.io'
+    const params = { sequential, CPF }
+    let serverRequest = await api.get('/consult', { params });
+    let serverResponse = await serverRequest.data;
   }
 
-  let stopLoading = () => {
-    setLoading(false)
-  }
-
-  let getImovelInfos = async (e) => {
-    const sequencialRegex = /^(\d){7}$/
-    const cpfRegex = /^(\d){11}$/
-    let sequencial_ra = sequencial.match(sequencialRegex);
-    let cpf_ra = cpf.match(cpfRegex);
-    let all_match = sequencial_ra && cpf_ra;
-
-    if (!loading && all_match) {
-      startLoading()
-      e.preventDefault();
-      let imovelSequencial = sequencial // 6907954
-      let imovelCpf = cpf // 89021029472
-
-      const webserviceUrl = 'http://dcba0e7ed745.ngrok.io'
-      const params = {
-        'sequencial': imovelSequencial,
-        'cpf': imovelCpf
-      }
-      let serverRequest = await axios.get(`${webserviceUrl}/imovel`, { params });
-      let serverResponse = await serverRequest.data;
-
-      let bombeirosResponse = serverResponse.bombeiros;
-      let darfResponse = serverResponse.darf;
-
-      let componentData = { iptuCertUrl: `${webserviceUrl}/pdf` }
-
-      if (bombeirosResponse.length === 0) {
-        componentData.bombeirosText = 'Sem pendências.';
-        // componentData.bombeirosImg = tickImg;
-      }
-
-      else if (bombeirosResponse.length !== 0) {
-        let componentText;
-
-        if (bombeirosResponse.length === 1) {
-          componentText = `Taxa de ${bombeirosResponse[0]} pendente.`
-        }
-        else {
-          componentText = `Anos de ${bombeirosResponse.join(', ')} pendentes.`;
-        }
-
-        componentData.bombeirosText = componentText;
-        // componentData.bombeirosImg = crossImg;
-      }
-
-      if (darfResponse === 'OKAY') {
-        componentData.darfText = 'Sem pendências';
-        // componentData.darfImg = tickImg;
-      }
-      else if (darfResponse !== 'OKAY') {
-        componentData.darfText = 'Taxa pendente.';
-        // componentData.darfImg = crossImg;
-      }
-
-      stopLoading()
-      setComponentData(componentData)
-    }
-  }
 
   return (
     <div id='page-consult-form' className='container'>
       <header>
-        <img src={logoImg} alt='Propi' />
+        <img src={logoImg} alt='Propi' onClick={() => history.push('/')} />
       </header>
       <main>
         <div className='consult-container'>
