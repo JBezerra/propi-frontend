@@ -7,6 +7,18 @@
     height: 100vh;
 }
 
+strong {
+    font: 600 12px Open Sans;
+    line-height: 16px;
+    color: var(--color-text-secundary)
+}
+
+h6 {
+    font: 12px Open Sans;
+    line-height: 16px;
+    color: var(--color-text)
+}
+
 header {
     display: flex;
     width: 100vw;
@@ -46,26 +58,110 @@ header img {
     float: right;
 }
 
-.asd {
-    background: blue;
-}
-
 .darf-content {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    /* width: 100%; */
+    align-items: center;
+    width: 95%;
 }
 
 .darf-left-column-content {
     display: flex;
+    width: 230px;
     flex-direction: column;
+    align-items: flex-start;
 }
 
-.darf-text-row {
-    background: red;
+.darf-right-column-content {
     display: flex;
+    width: 150px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.card-text-row {
+    display: flex;
+    width: 100%;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+}
+
+.payment-file-button {
+    display: flex;
+    width: 150px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: opacity 300ms;
+}
+
+.payment-file-button:hover {
+    opacity: 0.5;
+}
+
+.payment-file-button h4 {
+    font: 800 12px Open Sans;
+}
+
+.tpei-content {
+    width: 124px;
+}
+
+.cnd-iptu-content {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    width: 100%;
+}
+
+.modal-pdf-button {
+    display: flex;
+    width: 100%;
+    font: 16px Open Sans;
+    line-height: 14px;
+    margin-bottom: 20px;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+    transition: color 300ms;
+}
+
+.modal-pdf-button:hover {
+    opacity: 0.5;
+}
+
+.modal-pdf-button h6 {
+    margin-right: 5px;
+}
+
+.teor-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.teor-address-content {
+    cursor: pointer;
+}
+
+.teor-address-content div {
+    display: flex;
+    flex-direction: row;
+    margin-right: 10px;
+    transition: opacity 300ms;
+}
+
+.teor-address-content div:hover {
+    opacity: 0.5;
+}
+
+.teor-address-content div h6 {
+    margin-right: 10px;
 }
