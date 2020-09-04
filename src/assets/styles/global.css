@@ -1,0 +1,42 @@
+:root {
+    --color-header: #FFFFFF;
+    --color-background: #F5F6F9;
+    --color-primary: #222222;
+    --color-secundary: #FF0C0C;
+    --color-card-background: #FFFFFF;
+    --color-text: #6B6B6B;
+    --color-text-lighter: #A4A4A4;
+    --color-text-success: #3BEC5D;
+    --color-line-in-white: #E6E6E6;
+    font-size: 62.5%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body, #root {
+    height: 100vh;
+}
+
+body {
+    background: var(--color-background);
+}
+
+#root {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+body, input, button, textarea {
+    /* 1.6rem = 60% a mais do font-size global (60%) */
+    font: 500 1.6rem Open Sans;
+}
+
+.container {
+    width: 1000vw;
+    max-width: 1100px;
+}
