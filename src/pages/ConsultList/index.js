@@ -7,6 +7,7 @@ import { faAngleUp, faExpand } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 
 import CardBox from '../../components/CardBox'
+import PDFCardContent from '../../components/PDFCardContent'
 
 import logoImg from '../../assets/images/logo.svg'
 
@@ -192,18 +193,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos de IPTU'
                 description='Certifica a existência de débitos referentes ao IPTU do imóvel'
               >
-                <div className='cnd-iptu-content'>
-                  <Document
-                    file='http://127.0.0.1:5000/pdf'
-                    onLoadSuccess={() => console.log('PDF Loaded Successfully!')}
-                  >
-                    <Page pageNumber={1} width={350} />
-                  </Document>
-                </div>
-                <div className='modal-pdf-button'>
-                  <h6>Expandir documento</h6>
-                  <FontAwesomeIcon icon={faExpand} size='xs' />
-                </div>
+                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
               </CardBox>
 
               <CardBox
@@ -253,61 +243,41 @@ function ConsultList() {
 
           <div className='cards-container'>
             <div className='left-column-area'>
+              <CardBox
+                title='Certidão Negativa de Débitos Trabalhistas'
+                description='A Certidão será negativa se a pessoa de quem se trata não estiver inscrita como devedora no Banco Nacional de Devedores Trabalhistas. A Certidão será positiva se a pessoa de quem se trata tiver execução definitiva em andamento, já com ordem de pagamento não cumprida.'
+              >
+                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+              </CardBox>
+
+              <CardBox
+                title='Certidão Negativa Criminal'
+                description='Constata a existência de ação de natureza criminal contra o CPF/CNPJ apresentado, consultado nos sistemas processuais da respectiva Corte.'
+              >
+                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+              </CardBox>
             </div>
 
             <div className='right-column-area'>
               <CardBox
-                title='Certidão Negativa de Débitos de IPTU'
-                description='Certifica a existência de débitos referentes ao IPTU do imóvel'
+                title='Certidão Negativa de Débitos Estaduais'
+                description='A Certidão Negativa de Débitos é o documento emitido pela Secretaria de Estado da Fazenda dando prova da inexistência de pendências e débitos tributários do contribuinte. Quando constam pendências ou dívidas, a Certidão emitida é a chamada Certidão Positiva de Débitos.'
               >
-                <div className='cnd-iptu-content'>
-                  <Document
-                    file='http://127.0.0.1:5000/pdf'
-                    onLoadSuccess={() => console.log('PDF Loaded Successfully!')}
-                  >
-                    <Page pageNumber={1} width={350} />
-                  </Document>
-                </div>
-                <div className='modal-pdf-button'>
-                  <h6>Expandir documento</h6>
-                  <FontAwesomeIcon icon={faExpand} size='xs' />
-                </div>
+                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
               </CardBox>
 
               <CardBox
-                title='Certidão de Inteiro Teor'
-                description='Certidão em inteiro teor, integral ou verbo ad verbum é um documento extraído de um livro de registro que reproduz todas as palavras nele contidas. Certidão de inteiro teor também pode ser uma certidão que apresenta todos os atos praticados e os nomes dos proprietários.'
+                title='Certidão Negativa da Justiça Federal Pernambuco'
+                description='Constata a existência de ação ou execução de natureza criminal, cível e fisca, contra o CPF/CNPJ apresentado, perante na Justiça Federal de 1ª Instância, Seção Judiciária do respectivo Estado, consultado nos registros de distribuição do mesmo.'
               >
-                <div className='teor-content'>
-                  <div className="column-content">
-                    <strong>Número do RIP</strong>
-                    <h6>2531 0012514-33</h6>
-                    <h6>2531 0012514-33</h6>
-                    <h6>2531 0012514-33</h6>
-                    <h6>2531 0012514-33</h6>
-                  </div>
-                  <div className="teor-address-content">
-                    <strong>Endereço do Imóvel</strong>
-                    <div>
-                      <h6>MARQUES DO HERVAL,167,SANTO ANTONIO</h6>
-                      <FontAwesomeIcon icon={faExpand} />
-                    </div>
-                    <div>
-                      <h6>MARQUES DO HERVAL,167,SANTO ANTONIO</h6>
-                      <FontAwesomeIcon icon={faExpand} />
-                    </div>
-                    <div>
-                      <h6>MARQUES DO HERVAL,167,SANTO ANTONIO</h6>
-                      <FontAwesomeIcon icon={faExpand} />
-                    </div>
-                    <div>
-                      <h6>MARQUES DO HERVAL,167,SANTO ANTONIO</h6>
-                      <FontAwesomeIcon icon={faExpand} />
-                    </div>
+                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
+              </CardBox>
 
-                  </div>
-
-                </div>
+              <CardBox
+                title='Certidão de Ações Trabalhistas'
+                description='Certifica que o CPF/CNPJ não consta nas bases processuais do Tribunal Regional do Trabalho, após validado na Receita Federal. A Certidão de Ações Trabalhistas tem validade por 30 dias após sua emissão e não gera os efeitos da Certidão Negativa de Débitos Trabalhistas - CNDT.'
+              >
+                <PDFCardContent fileSrc='http://127.0.0.1:5000/pdf' />
               </CardBox>
 
             </div>
