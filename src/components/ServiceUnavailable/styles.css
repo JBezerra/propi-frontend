@@ -1,0 +1,17 @@
+.unavailable-container {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    /* background: red; */
+}
+
+.unavailable-container h4 {
+    font: 14px Open Sans;
+    color: var(--color-text-warning);
+    margin-left: 5px;
+    text-align: left;
+}

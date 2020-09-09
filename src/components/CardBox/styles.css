@@ -57,3 +57,17 @@
     color: var(--color-secundary);
     margin-left: 5px;
 }
+
+.not-pendent-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.not-pendent-container h4 {
+    font: 18px Open Sans;
+    color: var(--color-text-success);
+    margin-left: 5px;
+}

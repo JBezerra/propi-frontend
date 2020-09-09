@@ -1,10 +1,14 @@
 :root {
     --color-header: #FFFFFF;
     --color-background: #F5F6F9;
+
     --color-primary: #222222;
     --color-secundary: #FF0C0C;
+
     --color-secundary-complement: #FFFFFF;
     --color-card-background: #FFFFFF;
+
+    --color-text-warning: #f39c12;
     --color-text: #6B6B6B;
     --color-text-landing: #FFFFFF;
     --color-text-secundary: #000000;

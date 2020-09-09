@@ -21,8 +21,8 @@
     margin-bottom: 70px;
 }
 
-.inputs-container {
-    width: 55%;
+.form-container {
+    width: 1000px;
     height: 90px;
     background: var(--color-card-background);
     box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
@@ -30,8 +30,15 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
-    padding-left: 25px;
+    justify-content: space-between;
+}
+.inputs-container {
+    width: 100%;
+    height: 90px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .inputs-container hr {
@@ -47,7 +54,7 @@
 
 .input-block input {
     font: normal 14px Open Sans;
-    width: 200px;
+    width: 150px;
     height: 25;
     line-height: 19px;
     outline: 0;
@@ -56,8 +63,12 @@
     align-items: center;
 }
 
+.input-block:nth-child(5) input {
+    width: 250px;
+}
+
 .submit-button {
-    width: 200px;
+    width: 240px;
     height: 56px;
     display: flex;
     flex-direction: row;
@@ -66,6 +77,7 @@
     background: var(--color-secundary);
     color: var(--color-secundary-complement);
     border-radius: 46px;
+    margin-right: 25px;
 
     transition: opacity 300ms;
     cursor: pointer;
