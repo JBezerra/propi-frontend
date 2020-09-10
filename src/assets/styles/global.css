@@ -45,5 +45,5 @@ body, input, button, textarea {
 
 .container {
     width: 1000vw;
-    max-width: 1100px;
+    min-width: 1000px;
 }

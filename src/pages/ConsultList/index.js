@@ -55,9 +55,7 @@ function ConsultList() {
   }
 
   async function getImmobileConsultAndPdfs(sequential, CPF, name) {
-    // 6907954
-    // 89021029472 // 13986430415
-    // MARIA DE LOURDES BORBA
+    // 6907954 // 89021029472 // 13986430415 // MARIA DE LOURDES BORBA
     const cpfParam = { "cpf": CPF }
     const sequentialParam = { "sequential": sequential }
     const cpfAndNameParam = { "cpf": CPF, "name": name }
