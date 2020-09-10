@@ -65,7 +65,7 @@ const ConsultForm = () => {
                     <div className="input-block">
                         <label htmlFor='name'>NOME</label>
                         <input
-                            placeholder='Digite o nome'
+                            placeholder='Digite o nome completo'
                             type="text"
                             id='nome'
                             value={name}

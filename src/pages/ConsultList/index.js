@@ -40,8 +40,7 @@ function ConsultList() {
 
 
   let FILE_SOURCE_LIST = {}
-  const webserviceUrl = 'https://05268b9b08b9.ngrok.io/'
-  // const webserviceUrl = 'http://localhost:5000'
+  const webserviceUrl = api.defaults.baseURL;
 
 
   useEffect(() => {
