@@ -29,7 +29,11 @@ const ConsultForm = () => {
         else {
             history.push({
                 pathname: '/consult',
-                state: { sequential, CPF, name }
+                state: {
+                    'sequentialInput': sequential,
+                    'CPFInput': CPF,
+                    'nameInput': name
+                }
             })
         }
     }

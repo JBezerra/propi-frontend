@@ -20,6 +20,10 @@ function ConsultList() {
   const location = useLocation();
   const history = useHistory()
 
+  const [sequential, setSequential] = useState('')
+  const [CPF, setCPF] = useState('')
+  const [name, setName] = useState('')
+
   const [DARFData, setDARFData] = useState({})
   const [bombermanData, setBombermanData] = useState([])
   const [immobileData, setImmobileData] = useState('')
@@ -44,21 +48,99 @@ function ConsultList() {
 
 
   useEffect(() => {
-    const { sequential, CPF, name } = location.state;
-    getConsultAndFiles(sequential, CPF, name);
+    const { sequentialInput, CPFInput, nameInput } = location.state;
+    console.log(sequentialInput, CPFInput, nameInput)
+
+    setCPF(CPFInput)
+    setSequential(sequentialInput)
+    setName(nameInput)
+
+    getConsultAndFiles(sequentialInput, CPFInput, nameInput);
   }, []);
 
-  async function getConsultAndFiles(sequential, CPF, name) {
-    console.log(sequential, CPF, name)
-
-    await getImmobileConsultAndPdfs(sequential, CPF, name);
+  const darfRequestHandler = () => {
+    const cpfParam = { "cpf": CPF }
+    api.post(`/consult/darf`, cpfParam).then(response => {
+      const { data } = response;
+      setDARFData(data);
+    }).catch(err => {
+      setDarfServiceDown(true);
+    })
   }
 
-  async function getImmobileConsultAndPdfs(sequential, CPF, name) {
-    // 6907954 // 89021029472 // 13986430415 // MARIA DE LOURDES BORBA
-    const cpfParam = { "cpf": CPF }
+  const bombermanRequestHandler = () => {
     const sequentialParam = { "sequential": sequential }
+    api.post(`/consult/bomberman`, sequentialParam).then(response => {
+      const { data } = response;
+      setBombermanData(data.pendent_years);
+    }).catch(err => {
+      setBombermanServiceDown(true);
+    })
+  }
+
+  const immobileRequestHandler = () => {
+    const cpfParam = { "cpf": CPF }
+    api.post(`/consult/immobile`, cpfParam).then(response => {
+      const { data } = response;
+      setImmobileData(data.pendent);
+    }).catch(err => {
+      setImmobileServiceDown(true);
+    })
+  }
+
+  const trf5RequestHandler = () => {
     const cpfAndNameParam = { "cpf": CPF, "name": name }
+    api.post(`/consult/trf5`, cpfAndNameParam).then(data => getPdfsFiles(CPF, sequential)).catch(err => {
+      setTrf5ServiceDown(true);
+    })
+
+  }
+
+  const workersLawsuitRequestHandler = () => {
+    const cpfParam = { "cpf": CPF }
+    api.post(`/consult/workers-lawsuit`, cpfParam).then(data => getPdfsFiles(CPF, sequential)).catch(err => {
+      setWorkersLawsuitServiceDown(true);
+    })
+  }
+
+  const iptuRequestHandler = () => {
+    const sequentialParam = { "sequential": sequential }
+    api.post(`/consult/iptu`, sequentialParam).then(data => getPdfsFiles(CPF, sequential)).catch(err => {
+      setIptuServiceDown(true);
+    })
+  }
+
+  const laborRequestHandler = () => {
+    const cpfParam = { "cpf": CPF }
+    api.post(`/consult/labor`, cpfParam).then(data => getPdfsFiles(CPF, sequential)).catch(err => {
+      setLaborServiceDown(true);
+    })
+  }
+
+  const stateRequestHandler = () => {
+    const cpfParam = { "cpf": CPF }
+    api.post(`/consult/state`, cpfParam).then(data => getPdfsFiles(CPF, sequential)).catch(err => {
+      setStateServiceDown(true);
+    })
+  }
+
+  const jfpeRequestHandler = () => {
+    const cpfAndNameParam = { "cpf": CPF, "name": name }
+    api.post(`/consult/jfpe`, cpfAndNameParam).then(data => getPdfsFiles(CPF, sequential)).catch(err => {
+      setJfpeServiceDown(true);
+    })
+  }
+
+  async function getConsultAndFiles(sequentialInput, CPFInput, nameInput) {
+    await getImmobileConsultAndPdfs(sequentialInput, CPFInput, nameInput);
+  }
+
+  async function getImmobileConsultAndPdfs(sequentialInput, CPFInput, nameInput) {
+    // 6907954 // 89021029472 // 13986430415 // MARIA DE LOURDES BORBA
+
+    const cpfParam = { "cpf": CPFInput }
+    const sequentialParam = { "sequential": sequentialInput }
+    const cpfAndNameParam = { "cpf": CPFInput, "name": nameInput }
 
     const darfRequest = api.post(`/consult/darf`, cpfParam).then(response => {
       const { data } = response;
@@ -111,7 +193,7 @@ function ConsultList() {
       trf5Request, workersLawsuitRequest, iptuRequest, laborRequest,
       stateRequest, jfpeRequest]).then(resolve => {
         setLoadingStatus(false)
-        getPdfsFiles(CPF, sequential)
+        getPdfsFiles(CPFInput, sequentialInput)
       })
 
   }
@@ -155,6 +237,7 @@ function ConsultList() {
                 description='A sigla DARF se refere a Documento de Arrecadação de Receitas Federais. Trata-se de um documento emitido pelo Ministério da Fazenda e da Secretaria da Receita Federal para cobrança de tributos administrados por esses órgãos.'
                 pendent={!Object.keys(DARFData).length == 0}
                 serviceDown={darfServiceDown}
+                reloadHandler={darfRequestHandler}
               >
                 {!darfServiceDown && Object.keys(DARFData).length != 0 &&
                   <div className='darf-content'>
@@ -210,6 +293,7 @@ function ConsultList() {
                 description='Certifica a existência de débitos referentes A Taxa de Prevenção e Extinção de Incêndios (TPEI).'
                 pendent={!bombermanData.length == 0}
                 serviceDown={bombermanServiceDown}
+                reloadHandler={bombermanRequestHandler}
               >
                 {!bombermanServiceDown && bombermanData.length != 0 &&
                   <div className='tpei-content'>
@@ -244,6 +328,7 @@ function ConsultList() {
                 description='Certidão de Domínio da União é um documento hábil para o conhecimento da condição de dominialidade de um imóvel em relação à área da União.'
                 pendent={immobileData}
                 serviceDown={immobileServiceDown}
+                reloadHandler={immobileRequestHandler}
               >
               </CardBox>
             </div>
@@ -253,6 +338,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos de IPTU'
                 description='Certifica a existência de débitos referentes ao IPTU do imóvel'
                 serviceDown={iptuServiceDown}
+                reloadHandler={iptuRequestHandler}
               >
                 {!iptuServiceDown &&
                   <PDFCardContent fileSrc={pdfsFileSource['IPTU_NEGATIVE_DEBTS']} />
@@ -313,6 +399,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos Trabalhistas'
                 description='A Certidão será negativa se a pessoa de quem se trata não estiver inscrita como devedora no Banco Nacional de Devedores Trabalhistas. A Certidão será positiva se a pessoa de quem se trata tiver execução definitiva em andamento, já com ordem de pagamento não cumprida.'
                 serviceDown={laborServiceDown}
+                reloadHandler={laborRequestHandler}
               >
                 {!laborServiceDown &&
                   <PDFCardContent fileSrc={pdfsFileSource['LABOR_NEGATIVE_DEBTS']} />
@@ -323,6 +410,7 @@ function ConsultList() {
                 title='Certidão Negativa Criminal'
                 description='Constata a existência de ação de natureza criminal contra o CPF/CNPJ apresentado, consultado nos sistemas processuais da respectiva Corte.'
                 serviceDown={trf5ServiceDown}
+                reloadHandler={trf5RequestHandler}
               >
                 {!trf5ServiceDown &&
                   <PDFCardContent fileSrc={pdfsFileSource['TRF5_NEGATIVE_CRIMINALS']} />
@@ -341,6 +429,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos Estaduais'
                 description='A Certidão Negativa de Débitos é o documento emitido pela Secretaria de Estado da Fazenda dando prova da inexistência de pendências e débitos tributários do contribuinte. Quando constam pendências ou dívidas, a Certidão emitida é a chamada Certidão Positiva de Débitos.'
                 serviceDown={stateServiceDown}
+                reloadHandler={stateRequestHandler}
               >
                 {!stateServiceDown &&
                   <PDFCardContent fileSrc={pdfsFileSource['STATE_NEGATIVE_DEBTS']} />
@@ -351,6 +440,7 @@ function ConsultList() {
                 title='Certidão Negativa da Justiça Federal Pernambuco'
                 description='Constata a existência de ação ou execução de natureza criminal, cível e fisca, contra o CPF/CNPJ apresentado, perante na Justiça Federal de 1ª Instância, Seção Judiciária do respectivo Estado, consultado nos registros de distribuição do mesmo.'
                 serviceDown={jfpeServiceDown}
+                reloadHandler={jfpeRequestHandler}
               >
                 {!jfpeServiceDown &&
                   <PDFCardContent fileSrc={pdfsFileSource['JFPE_NEGATIVE_DEBTS']} />
@@ -361,6 +451,7 @@ function ConsultList() {
                 title='Certidão de Ações Trabalhistas'
                 description='Certifica que o CPF/CNPJ não consta nas bases processuais do Tribunal Regional do Trabalho, após validado na Receita Federal. A Certidão de Ações Trabalhistas tem validade por 30 dias após sua emissão e não gera os efeitos da Certidão Negativa de Débitos Trabalhistas - CNDT.'
                 serviceDown={workersLawsuitServiceDown}
+                reloadHandler={workersLawsuitRequestHandler}
               >
                 {!workersLawsuitServiceDown &&
                   <PDFCardContent fileSrc={pdfsFileSource['WORKERS_LAWSUIT']} />

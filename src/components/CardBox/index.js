@@ -1,15 +1,30 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+    faTimesCircle,
+    faCheckCircle,
+    faSyncAlt
+} from '@fortawesome/free-solid-svg-icons'
 import ServiceUnavailable from '../ServiceUnavailable'
 
 import './styles.css';
 
-const CardBox = ({ title, description, pendent = undefined, serviceDown = false, children }) => {
+const CardBox = ({ title, description, pendent = undefined, serviceDown = false, reloadHandler, children }) => {
     return (
         <div className="card-box">
             <div className="card-content">
-                <h3>{title}</h3>
+                <div className="top-container">
+                    <h3>{title}</h3>
+                    {reloadHandler &&
+                        <div className="reload-container" onClick={reloadHandler}>
+                            <FontAwesomeIcon
+                                icon={faSyncAlt}
+                                color='#000000'
+                                className="reload-button"
+                            />
+                        </div>
+                    }
+                </div>
                 <p>{description}</p>
 
                 {pendent != undefined && !serviceDown && pendent &&
