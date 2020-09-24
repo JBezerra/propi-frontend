@@ -3,9 +3,11 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faExpand, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
 
+
 import api from '../../services/api'
 import axios from 'axios'
 
+import PDFModal from '../../components/PDFModal';
 import CardBox from '../../components/CardBox'
 import PDFCardContent from '../../components/PDFCardContent'
 import LoadingPage from '../../components/LoadingPage'
@@ -52,6 +54,8 @@ function ConsultList() {
 
   const [loadingStatus, setLoadingStatus] = useState(true)
 
+  const [openPDFModal, setOpenPDFModal] = useState(false)
+  const [PDFModalFileSrc, setPDFModalFileSrc] = useState('')
 
   let FILE_SOURCE_LIST = {}
   const webserviceUrl = api.defaults.baseURL;
@@ -262,7 +266,7 @@ function ConsultList() {
     //     getPdfsFiles(CPFInput, sequentialInput)
     //   })
     setLoadingStatus(false)
-
+    getPdfsFiles(CPFInput, sequentialInput)
   }
 
   function getPdfsFiles(CPF, sequential) {
@@ -289,6 +293,7 @@ function ConsultList() {
   return (
     <div id='page-consult-form' className='container'>
       {loadingStatus && <LoadingPage />}
+      {openPDFModal && <PDFModal PDFFileSrc={PDFModalFileSrc} closeModal={() => { setOpenPDFModal(false) }} />}
       <header>
         <img src={logoImg} alt='Propi' onClick={() => history.push('/')} />
       </header>
@@ -412,8 +417,18 @@ function ConsultList() {
                 reloadState={iptuReloadState}
               >
                 {!iptuServiceDown &&
-                  <PDFCardContent fileSrc={pdfsFileSource['IPTU_NEGATIVE_DEBTS']} />
+                  <>
+                    <PDFCardContent fileSrc={pdfsFileSource['IPTU_NEGATIVE_DEBTS']} />
+                    <div className='modal-pdf-button' onClick={() => {
+                      setOpenPDFModal(true)
+                      setPDFModalFileSrc(pdfsFileSource['IPTU_NEGATIVE_DEBTS'])
+                    }}>
+                      <h6>Expandir documento</h6>
+                      <FontAwesomeIcon icon={faExpand} size='xs' />
+                    </div>
+                  </>
                 }
+
               </CardBox>
 
               {/* <CardBox
@@ -474,7 +489,16 @@ function ConsultList() {
                 reloadState={laborReloadState}
               >
                 {!laborServiceDown &&
-                  <PDFCardContent fileSrc={pdfsFileSource['LABOR_NEGATIVE_DEBTS']} />
+                  <>
+                    <PDFCardContent fileSrc={pdfsFileSource['LABOR_NEGATIVE_DEBTS']} />
+                    <div className='modal-pdf-button' onClick={() => {
+                      setOpenPDFModal(true)
+                      setPDFModalFileSrc(pdfsFileSource['LABOR_NEGATIVE_DEBTS'])
+                    }}>
+                      <h6>Expandir documento</h6>
+                      <FontAwesomeIcon icon={faExpand} size='xs' />
+                    </div>
+                  </>
                 }
               </CardBox>
 
@@ -486,7 +510,16 @@ function ConsultList() {
                 reloadState={trf5ReloadState}
               >
                 {!trf5ServiceDown &&
-                  <PDFCardContent fileSrc={pdfsFileSource['TRF5_NEGATIVE_CRIMINALS']} />
+                  <>
+                    <PDFCardContent fileSrc={pdfsFileSource['TRF5_NEGATIVE_CRIMINALS']} />
+                    <div className='modal-pdf-button' onClick={() => {
+                      setOpenPDFModal(true)
+                      setPDFModalFileSrc(pdfsFileSource['TRF5_NEGATIVE_CRIMINALS'])
+                    }}>
+                      <h6>Expandir documento</h6>
+                      <FontAwesomeIcon icon={faExpand} size='xs' />
+                    </div>
+                  </>
                 }
               </CardBox>
               <br />
@@ -506,7 +539,16 @@ function ConsultList() {
                 reloadState={stateReloadState}
               >
                 {!stateServiceDown &&
-                  <PDFCardContent fileSrc={pdfsFileSource['STATE_NEGATIVE_DEBTS']} />
+                  <>
+                    <PDFCardContent fileSrc={pdfsFileSource['STATE_NEGATIVE_DEBTS']} />
+                    <div className='modal-pdf-button' onClick={() => {
+                      setOpenPDFModal(true)
+                      setPDFModalFileSrc(pdfsFileSource['STATE_NEGATIVE_DEBTS'])
+                    }}>
+                      <h6>Expandir documento</h6>
+                      <FontAwesomeIcon icon={faExpand} size='xs' />
+                    </div>
+                  </>
                 }
               </CardBox>
 
@@ -518,7 +560,16 @@ function ConsultList() {
                 reloadState={jfpeReloadState}
               >
                 {!jfpeServiceDown &&
-                  <PDFCardContent fileSrc={pdfsFileSource['JFPE_NEGATIVE_DEBTS']} />
+                  <>
+                    <PDFCardContent fileSrc={pdfsFileSource['JFPE_NEGATIVE_DEBTS']} />
+                    <div className='modal-pdf-button' onClick={() => {
+                      setOpenPDFModal(true)
+                      setPDFModalFileSrc(pdfsFileSource['JFPE_NEGATIVE_DEBTS'])
+                    }}>
+                      <h6>Expandir documento</h6>
+                      <FontAwesomeIcon icon={faExpand} size='xs' />
+                    </div>
+                  </>
                 }
               </CardBox>
 
@@ -530,7 +581,16 @@ function ConsultList() {
                 reloadState={workersLawsuitReloadState}
               >
                 {!workersLawsuitServiceDown &&
-                  <PDFCardContent fileSrc={pdfsFileSource['WORKERS_LAWSUIT']} />
+                  <>
+                    <PDFCardContent fileSrc={pdfsFileSource['WORKERS_LAWSUIT']} />
+                    <div className='modal-pdf-button' onClick={() => {
+                      setOpenPDFModal(true)
+                      setPDFModalFileSrc(pdfsFileSource['WORKERS_LAWSUIT'])
+                    }}>
+                      <h6>Expandir documento</h6>
+                      <FontAwesomeIcon icon={faExpand} size='xs' />
+                    </div>
+                  </>
                 }
               </CardBox>
 

@@ -1,0 +1,24 @@
+.modal-container {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgb(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.close-modal {
+    position: fixed;
+    background: rgb(0, 0, 0, 0.7);
+    height: 100%;
+    width: 100%;
+    padding: 25px 50px;
+
+    transition: background 300ms;
+}
+.close-modal:hover {
+    background: rgb(0, 0, 0, 0.5);
+}
