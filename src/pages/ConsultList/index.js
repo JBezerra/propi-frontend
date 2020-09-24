@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faExpand, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
+import { faAngleUp, faAngleDown, faExpand, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
+import { UnmountClosed } from 'react-collapse';
 
 
 import api from '../../services/api'
-import axios from 'axios'
 
 import PDFModal from '../../components/PDFModal';
 import CardBox from '../../components/CardBox'
@@ -57,6 +57,9 @@ function ConsultList() {
   const [openPDFModal, setOpenPDFModal] = useState(false)
   const [PDFModalFileSrc, setPDFModalFileSrc] = useState('')
 
+  const [darfPaymentPDFOpen, setDarfPaymentPDFOpen] = useState(false)
+  const [bombermanPaymentPDFOpen, setBombermanPaymentPDFOpen] = useState(false)
+
   let FILE_SOURCE_LIST = {}
   const webserviceUrl = api.defaults.baseURL;
 
@@ -80,6 +83,7 @@ function ConsultList() {
         const { data } = response;
         setDARFData(data);
         setDarfReloadState(false)
+        getPdfsFiles(CPF, sequential)
       }).catch(err => {
         setDarfServiceDown(true);
         setDarfReloadState(false)
@@ -95,6 +99,7 @@ function ConsultList() {
         const { data } = response;
         setBombermanData(data.pendent_years);
         setBombermanReloadState(false)
+        getPdfsFiles(CPF, sequential)
       }).catch(err => {
         setBombermanReloadState(false)
         setBombermanServiceDown(true);
@@ -272,6 +277,8 @@ function ConsultList() {
   function getPdfsFiles(CPF, sequential) {
     FILE_SOURCE_LIST = {
       'IPTU_NEGATIVE_DEBTS': `${sequential}_IPTUNegativeDebts`,
+      'DARF_PAYMENT': `${CPF}_DARFPayment`,
+      'BOMBERMAN_PAYMENT': `${sequential}_BombermanPayment`,
       'LABOR_NEGATIVE_DEBTS': `${CPF}_LaborNegativeDebts`,
       'STATE_NEGATIVE_DEBTS': `${CPF}_StateNegativeDebts`,
       'JFPE_NEGATIVE_DEBTS': `${CPF}_JFPENegativeDebts`,
@@ -280,6 +287,8 @@ function ConsultList() {
     }
     const PDFS_FILE_SOURCE = {
       'IPTU_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['IPTU_NEGATIVE_DEBTS']}`,
+      'DARF_PAYMENT': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['DARF_PAYMENT']}`,
+      'BOMBERMAN_PAYMENT': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['BOMBERMAN_PAYMENT']}`,
       'LABOR_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['LABOR_NEGATIVE_DEBTS']}`,
       'STATE_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['STATE_NEGATIVE_DEBTS']}`,
       'JFPE_NEGATIVE_DEBTS': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['JFPE_NEGATIVE_DEBTS']}`,
@@ -354,10 +363,28 @@ function ConsultList() {
                     </div>
                   </div>
                 }
-
-                <div className='payment-file-button'>
-                  {/* <h4>Boleto de pagamento</h4>
-                  <FontAwesomeIcon icon={faAngleUp} /> */}
+                <div className='payment-file-container'>
+                  <div className='payment-file-button' onClick={() => {
+                    setDarfPaymentPDFOpen(!darfPaymentPDFOpen)
+                    getPdfsFiles(CPF, sequential)
+                  }}>
+                    <h4>Boleto de pagamento</h4>
+                    <FontAwesomeIcon
+                      icon={darfPaymentPDFOpen ? faAngleDown : faAngleUp}
+                    />
+                  </div>
+                  <div className="payment-file">
+                    <UnmountClosed isOpened={darfPaymentPDFOpen} className='payment-file'>
+                      <PDFCardContent fileSrc={pdfsFileSource['DARF_PAYMENT']} />
+                      <div className='modal-pdf-button' onClick={() => {
+                        setOpenPDFModal(true)
+                        setPDFModalFileSrc(pdfsFileSource['DARF_PAYMENT'])
+                      }}>
+                        <h6>Expandir documento</h6>
+                        <FontAwesomeIcon icon={faExpand} size='xs' />
+                      </div>
+                    </UnmountClosed>
+                  </div>
                 </div>
               </CardBox>
 
@@ -391,9 +418,28 @@ function ConsultList() {
                     })}
                   </div>
                 }
-                <div className='payment-file-button'>
-                  {/* <h4>Boleto de pagamento</h4>
-                  <FontAwesomeIcon icon={faAngleUp} /> */}
+                <div className='payment-file-container'>
+                  <div className='payment-file-button' onClick={() => {
+                    setBombermanPaymentPDFOpen(!bombermanPaymentPDFOpen)
+                    getPdfsFiles(CPF, sequential)
+                  }}>
+                    <h4>Boleto de pagamento</h4>
+                    <FontAwesomeIcon
+                      icon={bombermanPaymentPDFOpen ? faAngleDown : faAngleUp}
+                    />
+                  </div>
+                  <div className="payment-file">
+                    <UnmountClosed isOpened={bombermanPaymentPDFOpen} className='payment-file'>
+                      <PDFCardContent fileSrc={pdfsFileSource['BOMBERMAN_PAYMENT']} />
+                      <div className='modal-pdf-button' onClick={() => {
+                        setOpenPDFModal(true)
+                        setPDFModalFileSrc(pdfsFileSource['BOMBERMAN_PAYMENT'])
+                      }}>
+                        <h6>Expandir documento</h6>
+                        <FontAwesomeIcon icon={faExpand} size='xs' />
+                      </div>
+                    </UnmountClosed>
+                  </div>
                 </div>
               </CardBox>
 

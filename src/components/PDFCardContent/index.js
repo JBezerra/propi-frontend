@@ -10,7 +10,7 @@ const PDFCardContent = ({ fileSrc }) => {
         <>
             <div className="pdf-card-content">
                 <div className='cnd-iptu-content'>
-                    <Document file={fileSrc}>
+                    <Document file={fileSrc} >
                         <Page pageNumber={1} width={350} />
                     </Document>
                 </div >

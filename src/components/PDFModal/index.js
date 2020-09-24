@@ -16,7 +16,7 @@ const PDFModal = ({ PDFFileSrc, closeModal }) => {
                 />
             </div>
             <Document file={PDFFileSrc}>
-                <Page pageNumber={1} width={450} />
+                <Page pageNumber={1} width={500} />
             </Document>
         </div>
     );

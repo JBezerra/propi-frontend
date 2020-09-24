@@ -108,10 +108,13 @@ header img {
     font: 800 12px Open Sans;
 }
 
+.payment-file {
+    width: 500px;
+}
+
 .tpei-content {
     width: 124px;
 }
-
 
 .teor-content {
     display: flex;
