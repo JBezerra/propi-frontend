@@ -69,115 +69,132 @@ function ConsultList() {
   }, []);
 
   const darfRequestHandler = () => {
-    setDarfReloadState(true)
-    const cpfParam = { "cpf": CPF }
-    api.post(`/consult/darf`, cpfParam).then(response => {
-      const { data } = response;
-      setDARFData(data);
-      setDarfReloadState(false)
-    }).catch(err => {
-      setDarfServiceDown(true);
-      setDarfReloadState(false)
-    })
+    if (!darfReloadState) {
+      setDarfReloadState(true)
+      const cpfParam = { "cpf": CPF }
+      api.post(`/consult/darf`, cpfParam).then(response => {
+        const { data } = response;
+        setDARFData(data);
+        setDarfReloadState(false)
+      }).catch(err => {
+        setDarfServiceDown(true);
+        setDarfReloadState(false)
+      })
+    }
   }
 
   const bombermanRequestHandler = () => {
-    setBombermanReloadState(true)
-    const sequentialParam = { "sequential": sequential }
-    api.post(`/consult/bomberman`, sequentialParam).then(response => {
-      const { data } = response;
-      setBombermanData(data.pendent_years);
-      setBombermanReloadState(false)
-    }).catch(err => {
-      setBombermanReloadState(false)
-      setBombermanServiceDown(true);
-    })
+    if (!bombermanReloadState) {
+      setBombermanReloadState(true)
+      const sequentialParam = { "sequential": sequential }
+      api.post(`/consult/bomberman`, sequentialParam).then(response => {
+        const { data } = response;
+        setBombermanData(data.pendent_years);
+        setBombermanReloadState(false)
+      }).catch(err => {
+        setBombermanReloadState(false)
+        setBombermanServiceDown(true);
+      })
+    }
   }
 
   const immobileRequestHandler = () => {
-    setImmobileReloadState(true)
-    const cpfParam = { "cpf": CPF }
-    api.post(`/consult/immobile`, cpfParam).then(response => {
-      const { data } = response;
-      setImmobileData(data.pendent);
-      setImmobileReloadState(false)
-    }).catch(err => {
-      setImmobileReloadState(false)
-      setImmobileServiceDown(true);
-    })
+    if (!immobileReloadState) {
+      setImmobileReloadState(true)
+      const cpfParam = { "cpf": CPF }
+      api.post(`/consult/immobile`, cpfParam).then(response => {
+        const { data } = response;
+        setImmobileData(data.pendent);
+        setImmobileReloadState(false)
+      }).catch(err => {
+        setImmobileReloadState(false)
+        setImmobileServiceDown(true);
+      })
+    }
   }
 
   const trf5RequestHandler = () => {
-    setTrf5ReloadState(true);
-    const cpfAndNameParam = { "cpf": CPF, "name": name }
-    api.post(`/consult/trf5`, cpfAndNameParam).then(data => {
-      getPdfsFiles(CPF, sequential)
-      setTrf5ReloadState(false);
-    }).catch(err => {
-      setTrf5ReloadState(false);
-      setTrf5ServiceDown(true);
-    })
-
+    if (!trf5ReloadState) {
+      setTrf5ReloadState(true);
+      const cpfAndNameParam = { "cpf": CPF, "name": name }
+      api.post(`/consult/trf5`, cpfAndNameParam).then(data => {
+        getPdfsFiles(CPF, sequential)
+        setTrf5ReloadState(false);
+      }).catch(err => {
+        setTrf5ReloadState(false);
+        setTrf5ServiceDown(true);
+      })
+    }
   }
 
   const workersLawsuitRequestHandler = () => {
-    setWorkersLawsuitReloadState(true)
-    const cpfParam = { "cpf": CPF }
-    api.post(`/consult/workers-lawsuit`, cpfParam).then(data => {
-      getPdfsFiles(CPF, sequential)
-      setWorkersLawsuitReloadState(false)
-    }).catch(err => {
-      setWorkersLawsuitReloadState(false)
-      setWorkersLawsuitServiceDown(true);
-    })
+    if (!workersLawsuitReloadState) {
+      setWorkersLawsuitReloadState(true)
+      const cpfParam = { "cpf": CPF }
+      api.post(`/consult/workers-lawsuit`, cpfParam).then(data => {
+        getPdfsFiles(CPF, sequential)
+        setWorkersLawsuitReloadState(false)
+      }).catch(err => {
+        setWorkersLawsuitReloadState(false)
+        setWorkersLawsuitServiceDown(true);
+      })
+    }
   }
 
   const iptuRequestHandler = () => {
-    setIptuReloadState(true)
-    const sequentialParam = { "sequential": sequential }
-    api.post(`/consult/iptu`, sequentialParam).then(data => {
-      getPdfsFiles(CPF, sequential)
-      setIptuReloadState(false)
-    }).catch(err => {
-      setIptuReloadState(false)
-      setIptuServiceDown(true);
-    })
+    if (!iptuReloadState) {
+      setIptuReloadState(true)
+      const sequentialParam = { "sequential": sequential }
+      api.post(`/consult/iptu`, sequentialParam).then(data => {
+        getPdfsFiles(CPF, sequential)
+        setIptuReloadState(false)
+      }).catch(err => {
+        setIptuReloadState(false)
+        setIptuServiceDown(true);
+      })
+    }
   }
 
   const laborRequestHandler = () => {
-    setLaborReloadState(true)
-    const cpfParam = { "cpf": CPF }
-    api.post(`/consult/labor`, cpfParam).then(data => {
-      getPdfsFiles(CPF, sequential)
-      setLaborReloadState(false)
-    }).catch(err => {
-      setLaborReloadState(false)
-      setLaborServiceDown(true);
-    })
+    if (!laborReloadState) {
+      setLaborReloadState(true)
+      const cpfParam = { "cpf": CPF }
+      api.post(`/consult/labor`, cpfParam).then(data => {
+        getPdfsFiles(CPF, sequential)
+        setLaborReloadState(false)
+      }).catch(err => {
+        setLaborReloadState(false)
+        setLaborServiceDown(true);
+      })
+    }
   }
 
   const stateRequestHandler = () => {
-    setStateReloadState(true)
-    const cpfParam = { "cpf": CPF }
-    api.post(`/consult/state`, cpfParam).then(data => {
-      getPdfsFiles(CPF, sequential)
-      setStateReloadState(false)
-    }).catch(err => {
-      setStateReloadState(false)
-      setStateServiceDown(true);
-    })
+    if (!stateReloadState) {
+      setStateReloadState(true)
+      const cpfParam = { "cpf": CPF }
+      api.post(`/consult/state`, cpfParam).then(data => {
+        getPdfsFiles(CPF, sequential)
+        setStateReloadState(false)
+      }).catch(err => {
+        setStateReloadState(false)
+        setStateServiceDown(true);
+      })
+    }
   }
 
   const jfpeRequestHandler = () => {
-    setJfpeReloadState(true)
-    const cpfAndNameParam = { "cpf": CPF, "name": name }
-    api.post(`/consult/jfpe`, cpfAndNameParam).then(data => {
-      getPdfsFiles(CPF, sequential)
-      setJfpeReloadState(false);
-    }).catch(err => {
-      setJfpeReloadState(false);
-      setJfpeServiceDown(true);
-    })
+    if (!jfpeReloadState) {
+      setJfpeReloadState(true)
+      const cpfAndNameParam = { "cpf": CPF, "name": name }
+      api.post(`/consult/jfpe`, cpfAndNameParam).then(data => {
+        getPdfsFiles(CPF, sequential)
+        setJfpeReloadState(false);
+      }).catch(err => {
+        setJfpeReloadState(false);
+        setJfpeServiceDown(true);
+      })
+    }
   }
 
   async function getConsultAndFiles(sequentialInput, CPFInput, nameInput) {
@@ -245,7 +262,6 @@ function ConsultList() {
     //     getPdfsFiles(CPFInput, sequentialInput)
     //   })
     setLoadingStatus(false)
-    getPdfsFiles(CPFInput, sequentialInput)
 
   }
 
