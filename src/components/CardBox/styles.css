@@ -16,18 +16,28 @@
     width: 500px;
 }
 
-.top-container{
+.top-container {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     /* width: 500px; */
-
     transition: opacity 300ms;
 }
 
-.reload-button:hover{
+.reload-button:hover {
     opacity: 0.5;
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+.reload-button-active {
+    animation: spin 2s linear infinite;
 }
 
 .card-content h3 {

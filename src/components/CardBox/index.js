@@ -9,7 +9,7 @@ import ServiceUnavailable from '../ServiceUnavailable'
 
 import './styles.css';
 
-const CardBox = ({ title, description, pendent = undefined, serviceDown = false, reloadHandler, children }) => {
+const CardBox = ({ title, description, pendent = undefined, serviceDown = false, reloadHandler, reloadState, children }) => {
     return (
         <div className="card-box">
             <div className="card-content">
@@ -20,7 +20,7 @@ const CardBox = ({ title, description, pendent = undefined, serviceDown = false,
                             <FontAwesomeIcon
                                 icon={faSyncAlt}
                                 color='#000000'
-                                className="reload-button"
+                                className={reloadState ? "reload-button-active": "reload-button"}
                             />
                         </div>
                     }
