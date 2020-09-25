@@ -11,6 +11,7 @@ import PDFModal from '../../components/PDFModal';
 import CardBox from '../../components/CardBox'
 import PDFCardContent from '../../components/PDFCardContent'
 import LoadingPage from '../../components/LoadingPage'
+import DownloadConsult from '../../components/DownloadConsult'
 
 
 import logoImg from '../../assets/images/logo.svg'
@@ -303,6 +304,7 @@ function ConsultList() {
     <div id='page-consult-form' className='container'>
       {loadingStatus && <LoadingPage />}
       {openPDFModal && <PDFModal PDFFileSrc={PDFModalFileSrc} closeModal={() => { setOpenPDFModal(false) }} />}
+      <DownloadConsult CPF={CPF} sequential={sequential} />
       <header>
         <img src={logoImg} alt='Propi' onClick={() => history.push('/')} />
       </header>

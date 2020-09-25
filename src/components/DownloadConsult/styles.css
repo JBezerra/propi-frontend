@@ -1,0 +1,38 @@
+.float-container {
+    position: fixed;
+
+    margin: 20px 20px;
+
+    bottom: 0;
+    left: 0;
+
+    transition: background 300ms;
+    float: left;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.float-container :hover {
+    background: rgb(200, 200, 200);
+}
+
+.download-consult-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 250px;
+    height: 55px;
+
+    background: #FFFFFF;
+    box-shadow: 5px 5px 22px rgba(0, 0, 0, 0.05);
+    border-radius: 40px;
+}
+
+.download-consult-container h4 {
+    font: 18px Open Sans;
+}
+
+.download-consult-container svg {
+    margin-right: 10px;
+}
