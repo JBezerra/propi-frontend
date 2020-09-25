@@ -4,15 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faExpand, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
 import { UnmountClosed } from 'react-collapse';
 
-
 import api from '../../services/api'
 
 import PDFModal from '../../components/PDFModal';
 import CardBox from '../../components/CardBox'
 import PDFCardContent from '../../components/PDFCardContent'
-import LoadingPage from '../../components/LoadingPage'
 import DownloadConsult from '../../components/DownloadConsult'
 
+import LoadingText from '../../components/Skeleton/LoadingText'
 
 import logoImg from '../../assets/images/logo.svg'
 
@@ -40,6 +39,15 @@ function ConsultList() {
   const [laborServiceDown, setLaborServiceDown] = useState(false)
   const [stateServiceDown, setStateServiceDown] = useState(false)
   const [jfpeServiceDown, setJfpeServiceDown] = useState(false)
+
+  const [darfFileUrl, setDarfFileUrl] = useState(undefined)
+  const [bombermanFileUrl, setBombermanFileUrl] = useState(undefined)
+  const [trf5FileUrl, setTrf5FileUrl] = useState(undefined)
+  const [workersLawsuitFileUrl, setWorkersLawsuitFileUrl] = useState(undefined)
+  const [iptuFileUrl, setIptuFileUrl] = useState(undefined)
+  const [laborFileUrl, setLaborFileUrl] = useState(undefined)
+  const [stateFileUrl, setStateFileUrl] = useState(undefined)
+  const [jfpeFileUrl, setJfpeFileUrl] = useState(undefined)
 
   const [darfReloadState, setDarfReloadState] = useState(false)
   const [bombermanReloadState, setBombermanReloadState] = useState(false)
@@ -84,7 +92,7 @@ function ConsultList() {
         const { data } = response;
         setDARFData(data);
         setDarfReloadState(false)
-        getPdfsFiles(CPF, sequential)
+        getPdfsFiles(CPF, sequential, 'DARF_PAYMENT')
       }).catch(err => {
         setDarfServiceDown(true);
         setDarfReloadState(false)
@@ -100,7 +108,7 @@ function ConsultList() {
         const { data } = response;
         setBombermanData(data.pendent_years);
         setBombermanReloadState(false)
-        getPdfsFiles(CPF, sequential)
+        getPdfsFiles(CPF, sequential, 'BOMBERMAN_PAYMENT')
       }).catch(err => {
         setBombermanReloadState(false)
         setBombermanServiceDown(true);
@@ -128,8 +136,8 @@ function ConsultList() {
       setTrf5ReloadState(true);
       const cpfAndNameParam = { "cpf": CPF, "name": name }
       api.post(`/consult/trf5`, cpfAndNameParam).then(data => {
-        getPdfsFiles(CPF, sequential)
         setTrf5ReloadState(false);
+        getPdfsFiles(CPF, sequential, 'TRF5_NEGATIVE_CRIMINALS')
       }).catch(err => {
         setTrf5ReloadState(false);
         setTrf5ServiceDown(true);
@@ -142,8 +150,8 @@ function ConsultList() {
       setWorkersLawsuitReloadState(true)
       const cpfParam = { "cpf": CPF }
       api.post(`/consult/workers-lawsuit`, cpfParam).then(data => {
-        getPdfsFiles(CPF, sequential)
         setWorkersLawsuitReloadState(false)
+        getPdfsFiles(CPF, sequential, 'WORKERS_LAWSUIT')
       }).catch(err => {
         setWorkersLawsuitReloadState(false)
         setWorkersLawsuitServiceDown(true);
@@ -156,8 +164,8 @@ function ConsultList() {
       setIptuReloadState(true)
       const sequentialParam = { "sequential": sequential }
       api.post(`/consult/iptu`, sequentialParam).then(data => {
-        getPdfsFiles(CPF, sequential)
         setIptuReloadState(false)
+        getPdfsFiles(CPF, sequential, 'IPTU_NEGATIVE_DEBTS')
       }).catch(err => {
         setIptuReloadState(false)
         setIptuServiceDown(true);
@@ -170,8 +178,8 @@ function ConsultList() {
       setLaborReloadState(true)
       const cpfParam = { "cpf": CPF }
       api.post(`/consult/labor`, cpfParam).then(data => {
-        getPdfsFiles(CPF, sequential)
         setLaborReloadState(false)
+        getPdfsFiles(CPF, sequential, 'LABOR_NEGATIVE_DEBTS')
       }).catch(err => {
         setLaborReloadState(false)
         setLaborServiceDown(true);
@@ -184,8 +192,8 @@ function ConsultList() {
       setStateReloadState(true)
       const cpfParam = { "cpf": CPF }
       api.post(`/consult/state`, cpfParam).then(data => {
-        getPdfsFiles(CPF, sequential)
         setStateReloadState(false)
+        getPdfsFiles(CPF, sequential, 'STATE_NEGATIVE_DEBTS')
       }).catch(err => {
         setStateReloadState(false)
         setStateServiceDown(true);
@@ -198,8 +206,8 @@ function ConsultList() {
       setJfpeReloadState(true)
       const cpfAndNameParam = { "cpf": CPF, "name": name }
       api.post(`/consult/jfpe`, cpfAndNameParam).then(data => {
-        getPdfsFiles(CPF, sequential)
         setJfpeReloadState(false);
+        getPdfsFiles(CPF, sequential, 'JFPE_NEGATIVE_DEBTS')
       }).catch(err => {
         setJfpeReloadState(false);
         setJfpeServiceDown(true);
@@ -272,10 +280,10 @@ function ConsultList() {
     //     getPdfsFiles(CPFInput, sequentialInput)
     //   })
     setLoadingStatus(false)
-    getPdfsFiles(CPFInput, sequentialInput)
+    // getPdfsFiles(CPFInput, sequentialInput)
   }
 
-  function getPdfsFiles(CPF, sequential) {
+  function getPdfsFiles(CPF, sequential, service) {
     FILE_SOURCE_LIST = {
       'IPTU_NEGATIVE_DEBTS': `${sequential}_IPTUNegativeDebts`,
       'DARF_PAYMENT': `${CPF}_DARFPayment`,
@@ -297,12 +305,34 @@ function ConsultList() {
       'WORKERS_LAWSUIT': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['WORKERS_LAWSUIT']}`
     }
 
-    setPdfsFileSource(PDFS_FILE_SOURCE)
+    if (service === 'IPTU_NEGATIVE_DEBTS'){
+      setIptuFileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'DARF_PAYMENT'){
+      setDarfFileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'BOMBERMAN_PAYMENT'){
+      setBombermanFileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'LABOR_NEGATIVE_DEBTS'){
+      setLaborFileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'STATE_NEGATIVE_DEBTS'){
+      setStateFileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'JFPE_NEGATIVE_DEBTS'){
+      setJfpeFileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'TRF5_NEGATIVE_CRIMINALS'){
+      setTrf5FileUrl(PDFS_FILE_SOURCE[service])
+    }
+    else if (service === 'WORKERS_LAWSUIT'){
+      setWorkersLawsuitFileUrl(PDFS_FILE_SOURCE[service])
+    }
   }
 
   return (
     <div id='page-consult-form' className='container'>
-      {loadingStatus && <LoadingPage />}
       {openPDFModal && <PDFModal PDFFileSrc={PDFModalFileSrc} closeModal={() => { setOpenPDFModal(false) }} />}
       <DownloadConsult CPF={CPF} sequential={sequential} />
       <header>
@@ -323,8 +353,9 @@ function ConsultList() {
                 reloadHandler={darfRequestHandler}
                 reloadState={darfReloadState}
               >
-                {!darfServiceDown && Object.keys(DARFData).length != 0 &&
-                  <div className='darf-content'>
+                {!darfServiceDown &&
+                  Object.keys(DARFData).length != 0 ?
+                  (<div className='darf-content'>
                     <div className='darf-left-column-content'>
                       <div className='card-text-row'>
                         <strong>Responsável: </strong>
@@ -363,8 +394,10 @@ function ConsultList() {
                         <h6>R$ {DARFData.total}</h6>
                       </div>
                     </div>
-                  </div>
+                  </div>) : <LoadingText />
                 }
+
+
                 <div className='payment-file-container'>
                   <div className='payment-file-button' onClick={() => {
                     setDarfPaymentPDFOpen(!darfPaymentPDFOpen)
@@ -377,10 +410,10 @@ function ConsultList() {
                   </div>
                   <div className="payment-file">
                     <UnmountClosed isOpened={darfPaymentPDFOpen} className='payment-file'>
-                      <PDFCardContent fileSrc={pdfsFileSource['DARF_PAYMENT']} />
+                      <PDFCardContent fileSrc={darfFileUrl} />
                       <div className='modal-pdf-button' onClick={() => {
                         setOpenPDFModal(true)
-                        setPDFModalFileSrc(pdfsFileSource['DARF_PAYMENT'])
+                        setPDFModalFileSrc(darfFileUrl)
                       }}>
                         <h6>Expandir documento</h6>
                         <FontAwesomeIcon icon={faExpand} size='xs' />
@@ -398,8 +431,9 @@ function ConsultList() {
                 reloadHandler={bombermanRequestHandler}
                 reloadState={bombermanReloadState}
               >
-                {!bombermanServiceDown && bombermanData.length != 0 &&
-                  <div className='tpei-content'>
+                {!bombermanServiceDown &&
+                  bombermanData.length != 0 ?
+                  (<div className='tpei-content'>
                     {["2016", "2017", "2018", "2019", "2020"].map(year => {
                       if (bombermanData.includes(year)) {
                         return (
@@ -418,7 +452,7 @@ function ConsultList() {
                         )
                       }
                     })}
-                  </div>
+                  </div>) : <LoadingText />
                 }
                 <div className='payment-file-container'>
                   <div className='payment-file-button' onClick={() => {
@@ -432,10 +466,10 @@ function ConsultList() {
                   </div>
                   <div className="payment-file">
                     <UnmountClosed isOpened={bombermanPaymentPDFOpen} className='payment-file'>
-                      <PDFCardContent fileSrc={pdfsFileSource['BOMBERMAN_PAYMENT']} />
+                      <PDFCardContent fileSrc={bombermanFileUrl} />
                       <div className='modal-pdf-button' onClick={() => {
                         setOpenPDFModal(true)
-                        setPDFModalFileSrc(pdfsFileSource['BOMBERMAN_PAYMENT'])
+                        setPDFModalFileSrc(bombermanFileUrl)
                       }}>
                         <h6>Expandir documento</h6>
                         <FontAwesomeIcon icon={faExpand} size='xs' />
@@ -466,17 +500,16 @@ function ConsultList() {
               >
                 {!iptuServiceDown &&
                   <>
-                    <PDFCardContent fileSrc={pdfsFileSource['IPTU_NEGATIVE_DEBTS']} />
+                    <PDFCardContent fileSrc={iptuFileUrl} />
                     <div className='modal-pdf-button' onClick={() => {
                       setOpenPDFModal(true)
-                      setPDFModalFileSrc(pdfsFileSource['IPTU_NEGATIVE_DEBTS'])
+                      setPDFModalFileSrc(iptuFileUrl)
                     }}>
                       <h6>Expandir documento</h6>
                       <FontAwesomeIcon icon={faExpand} size='xs' />
                     </div>
                   </>
                 }
-
               </CardBox>
 
               {/* <CardBox
@@ -538,10 +571,10 @@ function ConsultList() {
               >
                 {!laborServiceDown &&
                   <>
-                    <PDFCardContent fileSrc={pdfsFileSource['LABOR_NEGATIVE_DEBTS']} />
+                    <PDFCardContent fileSrc={laborFileUrl} />
                     <div className='modal-pdf-button' onClick={() => {
                       setOpenPDFModal(true)
-                      setPDFModalFileSrc(pdfsFileSource['LABOR_NEGATIVE_DEBTS'])
+                      setPDFModalFileSrc(laborFileUrl)
                     }}>
                       <h6>Expandir documento</h6>
                       <FontAwesomeIcon icon={faExpand} size='xs' />
@@ -559,10 +592,10 @@ function ConsultList() {
               >
                 {!trf5ServiceDown &&
                   <>
-                    <PDFCardContent fileSrc={pdfsFileSource['TRF5_NEGATIVE_CRIMINALS']} />
+                    <PDFCardContent fileSrc={trf5FileUrl} />
                     <div className='modal-pdf-button' onClick={() => {
                       setOpenPDFModal(true)
-                      setPDFModalFileSrc(pdfsFileSource['TRF5_NEGATIVE_CRIMINALS'])
+                      setPDFModalFileSrc(trf5FileUrl)
                     }}>
                       <h6>Expandir documento</h6>
                       <FontAwesomeIcon icon={faExpand} size='xs' />
@@ -588,10 +621,10 @@ function ConsultList() {
               >
                 {!stateServiceDown &&
                   <>
-                    <PDFCardContent fileSrc={pdfsFileSource['STATE_NEGATIVE_DEBTS']} />
+                    <PDFCardContent fileSrc={stateFileUrl} />
                     <div className='modal-pdf-button' onClick={() => {
                       setOpenPDFModal(true)
-                      setPDFModalFileSrc(pdfsFileSource['STATE_NEGATIVE_DEBTS'])
+                      setPDFModalFileSrc(stateFileUrl)
                     }}>
                       <h6>Expandir documento</h6>
                       <FontAwesomeIcon icon={faExpand} size='xs' />
@@ -609,10 +642,10 @@ function ConsultList() {
               >
                 {!jfpeServiceDown &&
                   <>
-                    <PDFCardContent fileSrc={pdfsFileSource['JFPE_NEGATIVE_DEBTS']} />
+                    <PDFCardContent fileSrc={jfpeFileUrl} />
                     <div className='modal-pdf-button' onClick={() => {
                       setOpenPDFModal(true)
-                      setPDFModalFileSrc(pdfsFileSource['JFPE_NEGATIVE_DEBTS'])
+                      setPDFModalFileSrc(jfpeFileUrl)
                     }}>
                       <h6>Expandir documento</h6>
                       <FontAwesomeIcon icon={faExpand} size='xs' />
@@ -630,10 +663,10 @@ function ConsultList() {
               >
                 {!workersLawsuitServiceDown &&
                   <>
-                    <PDFCardContent fileSrc={pdfsFileSource['WORKERS_LAWSUIT']} />
+                    <PDFCardContent fileSrc={workersLawsuitFileUrl} />
                     <div className='modal-pdf-button' onClick={() => {
                       setOpenPDFModal(true)
-                      setPDFModalFileSrc(pdfsFileSource['WORKERS_LAWSUIT'])
+                      setPDFModalFileSrc(workersLawsuitFileUrl)
                     }}>
                       <h6>Expandir documento</h6>
                       <FontAwesomeIcon icon={faExpand} size='xs' />

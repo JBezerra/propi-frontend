@@ -1,0 +1,31 @@
+.loading-text-line {
+    height: 10px;
+    width: 500px;
+    /* margin-bottom: 15px; */
+    border-radius: 8px;
+
+    background: #f6f7f8;
+    background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+    background-repeat: no-repeat;
+    background-size: 500px 10px;
+    display: inline-block;
+    position: relative;
+
+    -webkit-animation-duration: 1s;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: shimer;
+    -webkit-animation-timing-function: linear;
+
+    z-index: 0;
+}
+
+@keyframes shimer {
+    0% {
+      background-position: -468px 0;
+    }
+
+    100% {
+      background-position: 468px 0;
+    }
+  }
