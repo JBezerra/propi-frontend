@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Document, Page } from 'react-pdf/dist/entry.webpack';
 
 import LoadingPDF from '../Skeleton/LoadingPDF'

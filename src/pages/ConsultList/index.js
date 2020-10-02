@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactGA from 'react-ga';
+
 import { useHistory, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faExpand, faTruckMonster } from '@fortawesome/free-solid-svg-icons'
@@ -59,8 +61,6 @@ function ConsultList() {
   const [stateReloadState, setStateReloadState] = useState(false)
   const [jfpeReloadState, setJfpeReloadState] = useState(false)
 
-  const [pdfsFileSource, setPdfsFileSource] = useState({})
-
   const [loadingStatus, setLoadingStatus] = useState(true)
 
   const [openPDFModal, setOpenPDFModal] = useState(false)
@@ -75,6 +75,10 @@ function ConsultList() {
 
   useEffect(() => {
     const { sequentialInput, CPFInput, nameInput } = location.state;
+
+    ReactGA.set({ page: location.pathname });
+    ReactGA.pageview(location.pathname);
+
     console.log(sequentialInput, CPFInput, nameInput)
 
     setCPF(CPFInput)
@@ -84,15 +88,15 @@ function ConsultList() {
     getConsultAndFiles(sequentialInput, CPFInput, nameInput);
   }, []);
 
-  const darfRequestHandler = () => {
+  const darfRequestHandler = (consultantCPF) => {
     if (!darfReloadState) {
       setDarfReloadState(true)
-      const cpfParam = { "cpf": CPF }
+      const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/darf`, cpfParam).then(response => {
         const { data } = response;
         setDARFData(data);
         setDarfReloadState(false)
-        getPdfsFiles(CPF, sequential, 'DARF_PAYMENT')
+        getPdfsFiles(consultantCPF, '', 'DARF_PAYMENT')
       }).catch(err => {
         setDarfServiceDown(true);
         setDarfReloadState(false)
@@ -100,15 +104,15 @@ function ConsultList() {
     }
   }
 
-  const bombermanRequestHandler = () => {
+  const bombermanRequestHandler = (consultantSequential) => {
     if (!bombermanReloadState) {
       setBombermanReloadState(true)
-      const sequentialParam = { "sequential": sequential }
+      const sequentialParam = { "sequential": consultantSequential }
       api.post(`/consult/bomberman`, sequentialParam).then(response => {
         const { data } = response;
         setBombermanData(data.pendent_years);
         setBombermanReloadState(false)
-        getPdfsFiles(CPF, sequential, 'BOMBERMAN_PAYMENT')
+        getPdfsFiles('', consultantSequential, 'BOMBERMAN_PAYMENT')
       }).catch(err => {
         setBombermanReloadState(false)
         setBombermanServiceDown(true);
@@ -116,10 +120,10 @@ function ConsultList() {
     }
   }
 
-  const immobileRequestHandler = () => {
+  const immobileRequestHandler = (consultantCPF) => {
     if (!immobileReloadState) {
       setImmobileReloadState(true)
-      const cpfParam = { "cpf": CPF }
+      const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/immobile`, cpfParam).then(response => {
         const { data } = response;
         setImmobileData(data.pendent);
@@ -131,13 +135,13 @@ function ConsultList() {
     }
   }
 
-  const trf5RequestHandler = () => {
+  const trf5RequestHandler = (consultantCPF, consultantName) => {
     if (!trf5ReloadState) {
       setTrf5ReloadState(true);
-      const cpfAndNameParam = { "cpf": CPF, "name": name }
+      const cpfAndNameParam = { "cpf": consultantCPF, "name": consultantName }
       api.post(`/consult/trf5`, cpfAndNameParam).then(data => {
         setTrf5ReloadState(false);
-        getPdfsFiles(CPF, sequential, 'TRF5_NEGATIVE_CRIMINALS')
+        getPdfsFiles(consultantCPF, '', 'TRF5_NEGATIVE_CRIMINALS')
       }).catch(err => {
         setTrf5ReloadState(false);
         setTrf5ServiceDown(true);
@@ -145,13 +149,13 @@ function ConsultList() {
     }
   }
 
-  const workersLawsuitRequestHandler = () => {
+  const workersLawsuitRequestHandler = (consultantCPF) => {
     if (!workersLawsuitReloadState) {
       setWorkersLawsuitReloadState(true)
-      const cpfParam = { "cpf": CPF }
+      const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/workers-lawsuit`, cpfParam).then(data => {
         setWorkersLawsuitReloadState(false)
-        getPdfsFiles(CPF, sequential, 'WORKERS_LAWSUIT')
+        getPdfsFiles(consultantCPF, '', 'WORKERS_LAWSUIT')
       }).catch(err => {
         setWorkersLawsuitReloadState(false)
         setWorkersLawsuitServiceDown(true);
@@ -159,13 +163,13 @@ function ConsultList() {
     }
   }
 
-  const iptuRequestHandler = () => {
+  const iptuRequestHandler = (consultantSequential) => {
     if (!iptuReloadState) {
       setIptuReloadState(true)
-      const sequentialParam = { "sequential": sequential }
+      const sequentialParam = { "sequential": consultantSequential }
       api.post(`/consult/iptu`, sequentialParam).then(data => {
         setIptuReloadState(false)
-        getPdfsFiles(CPF, sequential, 'IPTU_NEGATIVE_DEBTS')
+        getPdfsFiles('', consultantSequential, 'IPTU_NEGATIVE_DEBTS')
       }).catch(err => {
         setIptuReloadState(false)
         setIptuServiceDown(true);
@@ -173,13 +177,13 @@ function ConsultList() {
     }
   }
 
-  const laborRequestHandler = () => {
+  const laborRequestHandler = (consultantCPF) => {
     if (!laborReloadState) {
       setLaborReloadState(true)
-      const cpfParam = { "cpf": CPF }
+      const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/labor`, cpfParam).then(data => {
         setLaborReloadState(false)
-        getPdfsFiles(CPF, sequential, 'LABOR_NEGATIVE_DEBTS')
+        getPdfsFiles(consultantCPF, '', 'LABOR_NEGATIVE_DEBTS')
       }).catch(err => {
         setLaborReloadState(false)
         setLaborServiceDown(true);
@@ -187,13 +191,13 @@ function ConsultList() {
     }
   }
 
-  const stateRequestHandler = () => {
+  const stateRequestHandler = (consultantCPF) => {
     if (!stateReloadState) {
       setStateReloadState(true)
-      const cpfParam = { "cpf": CPF }
+      const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/state`, cpfParam).then(data => {
         setStateReloadState(false)
-        getPdfsFiles(CPF, sequential, 'STATE_NEGATIVE_DEBTS')
+        getPdfsFiles(consultantCPF, '', 'STATE_NEGATIVE_DEBTS')
       }).catch(err => {
         setStateReloadState(false)
         setStateServiceDown(true);
@@ -201,13 +205,13 @@ function ConsultList() {
     }
   }
 
-  const jfpeRequestHandler = () => {
+  const jfpeRequestHandler = (consultantCPF, consultantName) => {
     if (!jfpeReloadState) {
       setJfpeReloadState(true)
-      const cpfAndNameParam = { "cpf": CPF, "name": name }
+      const cpfAndNameParam = { "cpf": consultantCPF, "name": consultantName }
       api.post(`/consult/jfpe`, cpfAndNameParam).then(data => {
         setJfpeReloadState(false);
-        getPdfsFiles(CPF, sequential, 'JFPE_NEGATIVE_DEBTS')
+        getPdfsFiles(consultantCPF, '', 'JFPE_NEGATIVE_DEBTS')
       }).catch(err => {
         setJfpeReloadState(false);
         setJfpeServiceDown(true);
@@ -215,72 +219,22 @@ function ConsultList() {
     }
   }
 
+
   async function getConsultAndFiles(sequentialInput, CPFInput, nameInput) {
     await getImmobileConsultAndPdfs(sequentialInput, CPFInput, nameInput);
   }
 
-  async function getImmobileConsultAndPdfs(sequentialInput, CPFInput, nameInput) {
+  async function getImmobileConsultAndPdfs(consultantSequential, consultantCPF, consultantName) {
     // 6907954 // 89021029472 // 13986430415 // MARIA DE LOURDES BORBA
-
-    // const cpfParam = { "cpf": CPFInput }
-    // const sequentialParam = { "sequential": sequentialInput }
-    // const cpfAndNameParam = { "cpf": CPFInput, "name": nameInput }
-
-    // const darfRequest = api.post(`/consult/darf`, cpfParam).then(response => {
-    //   const { data } = response;
-    //   setDARFData(data);
-    // }).catch(err => {
-    //   setDarfServiceDown(true);
-    // })
-
-    // const bombermanRequest = api.post(`/consult/bomberman`, sequentialParam).then(response => {
-    //   const { data } = response;
-    //   setBombermanData(data.pendent_years);
-    // }).catch(err => {
-    //   setBombermanServiceDown(true);
-    // })
-
-
-    // const immobileRequest = api.post(`/consult/immobile`, cpfParam).then(response => {
-    //   const { data } = response;
-    //   console.log(data.pendent)
-    //   setImmobileData(data.pendent);
-    // }).catch(err => {
-    //   setImmobileServiceDown(true);
-    // })
-
-    // const trf5Request = api.post(`/consult/trf5`, cpfAndNameParam).catch(err => {
-    //   setTrf5ServiceDown(true);
-    // })
-
-    // const workersLawsuitRequest = api.post(`/consult/workers-lawsuit`, cpfParam).catch(err => {
-    //   setWorkersLawsuitServiceDown(true);
-    // })
-
-    // const iptuRequest = api.post(`/consult/iptu`, sequentialParam).catch(err => {
-    //   setIptuServiceDown(true);
-    // })
-
-    // const laborRequest = api.post(`/consult/labor`, cpfParam).catch(err => {
-    //   setLaborServiceDown(true);
-    // })
-
-    // const stateRequest = api.post(`/consult/state`, cpfParam).catch(err => {
-    //   setStateServiceDown(true);
-    // })
-
-    // const jfpeRequest = api.post(`/consult/jfpe`, cpfAndNameParam).catch(err => {
-    //   setJfpeServiceDown(true);
-    // })
-
-    // Promise.all([bombermanRequest, darfRequest, immobileRequest,
-    //   trf5Request, workersLawsuitRequest, iptuRequest, laborRequest,
-    //   stateRequest, jfpeRequest]).then(resolve => {
-    //     setLoadingStatus(false)
-    //     getPdfsFiles(CPFInput, sequentialInput)
-    //   })
-    setLoadingStatus(false)
-    // getPdfsFiles(CPFInput, sequentialInput)
+    const darfRequestHandlerPromise = darfRequestHandler(consultantCPF);
+    const bombermanRequestHandlerPromise = bombermanRequestHandler(consultantSequential);
+    const immobileRequestHandlerPromise = immobileRequestHandler(consultantCPF);
+    const trf5RequestHandlerPromise = trf5RequestHandler(consultantCPF, consultantName);
+    const workersLawsuitRequestHandlerPromise = workersLawsuitRequestHandler(consultantCPF);
+    const iptuRequestHandlerPromise = iptuRequestHandler(consultantSequential);
+    const laborRequestHandlerPromise = laborRequestHandler(consultantCPF);
+    const stateRequestHandlerPromise = stateRequestHandler(consultantCPF);
+    const jfpeRequestHandlerPromise = jfpeRequestHandler(consultantCPF, consultantName);
   }
 
   function getPdfsFiles(CPF, sequential, service) {
@@ -305,28 +259,28 @@ function ConsultList() {
       'WORKERS_LAWSUIT': `${webserviceUrl}/get_certificate?file=${FILE_SOURCE_LIST['WORKERS_LAWSUIT']}`
     }
 
-    if (service === 'IPTU_NEGATIVE_DEBTS'){
+    if (service === 'IPTU_NEGATIVE_DEBTS') {
       setIptuFileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'DARF_PAYMENT'){
+    else if (service === 'DARF_PAYMENT') {
       setDarfFileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'BOMBERMAN_PAYMENT'){
+    else if (service === 'BOMBERMAN_PAYMENT') {
       setBombermanFileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'LABOR_NEGATIVE_DEBTS'){
+    else if (service === 'LABOR_NEGATIVE_DEBTS') {
       setLaborFileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'STATE_NEGATIVE_DEBTS'){
+    else if (service === 'STATE_NEGATIVE_DEBTS') {
       setStateFileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'JFPE_NEGATIVE_DEBTS'){
+    else if (service === 'JFPE_NEGATIVE_DEBTS') {
       setJfpeFileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'TRF5_NEGATIVE_CRIMINALS'){
+    else if (service === 'TRF5_NEGATIVE_CRIMINALS') {
       setTrf5FileUrl(PDFS_FILE_SOURCE[service])
     }
-    else if (service === 'WORKERS_LAWSUIT'){
+    else if (service === 'WORKERS_LAWSUIT') {
       setWorkersLawsuitFileUrl(PDFS_FILE_SOURCE[service])
     }
   }
@@ -350,7 +304,7 @@ function ConsultList() {
                 description='A sigla DARF se refere a Documento de Arrecadação de Receitas Federais. Trata-se de um documento emitido pelo Ministério da Fazenda e da Secretaria da Receita Federal para cobrança de tributos administrados por esses órgãos.'
                 pendent={!Object.keys(DARFData).length == 0}
                 serviceDown={darfServiceDown}
-                reloadHandler={darfRequestHandler}
+                reloadHandler={darfRequestHandler.bind(this, CPF)}
                 reloadState={darfReloadState}
               >
                 {!darfServiceDown &&
@@ -428,7 +382,7 @@ function ConsultList() {
                 description='Certifica a existência de débitos referentes A Taxa de Prevenção e Extinção de Incêndios (TPEI).'
                 pendent={!bombermanData.length == 0}
                 serviceDown={bombermanServiceDown}
-                reloadHandler={bombermanRequestHandler}
+                reloadHandler={bombermanRequestHandler.bind(this, sequential)}
                 reloadState={bombermanReloadState}
               >
                 {!bombermanServiceDown &&
@@ -484,7 +438,7 @@ function ConsultList() {
                 description='Certidão de Domínio da União é um documento hábil para o conhecimento da condição de dominialidade de um imóvel em relação à área da União.'
                 pendent={immobileData}
                 serviceDown={immobileServiceDown}
-                reloadHandler={immobileRequestHandler}
+                reloadHandler={immobileRequestHandler.bind(this, CPF)}
                 reloadState={immobileReloadState}
               >
               </CardBox>
@@ -495,7 +449,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos de IPTU'
                 description='Certifica a existência de débitos referentes ao IPTU do imóvel'
                 serviceDown={iptuServiceDown}
-                reloadHandler={iptuRequestHandler}
+                reloadHandler={iptuRequestHandler.bind(this, sequential)}
                 reloadState={iptuReloadState}
               >
                 {!iptuServiceDown &&
@@ -566,7 +520,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos Trabalhistas'
                 description='A Certidão será negativa se a pessoa de quem se trata não estiver inscrita como devedora no Banco Nacional de Devedores Trabalhistas. A Certidão será positiva se a pessoa de quem se trata tiver execução definitiva em andamento, já com ordem de pagamento não cumprida.'
                 serviceDown={laborServiceDown}
-                reloadHandler={laborRequestHandler}
+                reloadHandler={laborRequestHandler.bind(this, CPF)}
                 reloadState={laborReloadState}
               >
                 {!laborServiceDown &&
@@ -587,7 +541,7 @@ function ConsultList() {
                 title='Certidão Negativa Criminal'
                 description='Constata a existência de ação de natureza criminal contra o CPF/CNPJ apresentado, consultado nos sistemas processuais da respectiva Corte.'
                 serviceDown={trf5ServiceDown}
-                reloadHandler={trf5RequestHandler}
+                reloadHandler={trf5RequestHandler.bind(this, CPF, name)}
                 reloadState={trf5ReloadState}
               >
                 {!trf5ServiceDown &&
@@ -616,7 +570,7 @@ function ConsultList() {
                 title='Certidão Negativa de Débitos Estaduais'
                 description='A Certidão Negativa de Débitos é o documento emitido pela Secretaria de Estado da Fazenda dando prova da inexistência de pendências e débitos tributários do contribuinte. Quando constam pendências ou dívidas, a Certidão emitida é a chamada Certidão Positiva de Débitos.'
                 serviceDown={stateServiceDown}
-                reloadHandler={stateRequestHandler}
+                reloadHandler={stateRequestHandler.bind(this, CPF)}
                 reloadState={stateReloadState}
               >
                 {!stateServiceDown &&
@@ -637,7 +591,7 @@ function ConsultList() {
                 title='Certidão Negativa da Justiça Federal Pernambuco'
                 description='Constata a existência de ação ou execução de natureza criminal, cível e fisca, contra o CPF/CNPJ apresentado, perante na Justiça Federal de 1ª Instância, Seção Judiciária do respectivo Estado, consultado nos registros de distribuição do mesmo.'
                 serviceDown={jfpeServiceDown}
-                reloadHandler={jfpeRequestHandler}
+                reloadHandler={jfpeRequestHandler.bind(this, CPF, name)}
                 reloadState={jfpeReloadState}
               >
                 {!jfpeServiceDown &&
@@ -658,7 +612,7 @@ function ConsultList() {
                 title='Certidão de Ações Trabalhistas'
                 description='Certifica que o CPF/CNPJ não consta nas bases processuais do Tribunal Regional do Trabalho, após validado na Receita Federal. A Certidão de Ações Trabalhistas tem validade por 30 dias após sua emissão e não gera os efeitos da Certidão Negativa de Débitos Trabalhistas - CNDT.'
                 serviceDown={workersLawsuitServiceDown}
-                reloadHandler={workersLawsuitRequestHandler}
+                reloadHandler={workersLawsuitRequestHandler.bind(this, CPF)}
                 reloadState={workersLawsuitReloadState}
               >
                 {!workersLawsuitServiceDown &&
