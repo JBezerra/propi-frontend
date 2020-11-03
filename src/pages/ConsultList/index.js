@@ -96,6 +96,7 @@ function ConsultList() {
         const { data } = response;
         setDARFData(data);
         setDarfReloadState(false)
+        getPdfsFiles('', '', 'DARF_PAYMENT')
         getPdfsFiles(consultantCPF, '', 'DARF_PAYMENT')
       }).catch(err => {
         setDarfServiceDown(true);
@@ -112,6 +113,7 @@ function ConsultList() {
         const { data } = response;
         setBombermanData(data.pendent_years);
         setBombermanReloadState(false)
+        getPdfsFiles('', '', 'BOMBERMAN_PAYMENT')
         getPdfsFiles('', consultantSequential, 'BOMBERMAN_PAYMENT')
       }).catch(err => {
         setBombermanReloadState(false)
@@ -141,6 +143,7 @@ function ConsultList() {
       const cpfAndNameParam = { "cpf": consultantCPF, "name": consultantName }
       api.post(`/consult/trf5`, cpfAndNameParam).then(data => {
         setTrf5ReloadState(false);
+        getPdfsFiles('', '', 'TRF5_NEGATIVE_CRIMINALS')
         getPdfsFiles(consultantCPF, '', 'TRF5_NEGATIVE_CRIMINALS')
       }).catch(err => {
         setTrf5ReloadState(false);
@@ -155,6 +158,7 @@ function ConsultList() {
       const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/workers-lawsuit`, cpfParam).then(data => {
         setWorkersLawsuitReloadState(false)
+        getPdfsFiles('', '', 'WORKERS_LAWSUIT')
         getPdfsFiles(consultantCPF, '', 'WORKERS_LAWSUIT')
       }).catch(err => {
         setWorkersLawsuitReloadState(false)
@@ -169,6 +173,7 @@ function ConsultList() {
       const sequentialParam = { "sequential": consultantSequential }
       api.post(`/consult/iptu`, sequentialParam).then(data => {
         setIptuReloadState(false)
+        getPdfsFiles('', '', 'IPTU_NEGATIVE_DEBTS')
         getPdfsFiles('', consultantSequential, 'IPTU_NEGATIVE_DEBTS')
       }).catch(err => {
         setIptuReloadState(false)
@@ -183,6 +188,7 @@ function ConsultList() {
       const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/labor`, cpfParam).then(data => {
         setLaborReloadState(false)
+        getPdfsFiles('', '', 'LABOR_NEGATIVE_DEBTS')
         getPdfsFiles(consultantCPF, '', 'LABOR_NEGATIVE_DEBTS')
       }).catch(err => {
         setLaborReloadState(false)
@@ -197,6 +203,7 @@ function ConsultList() {
       const cpfParam = { "cpf": consultantCPF }
       api.post(`/consult/state`, cpfParam).then(data => {
         setStateReloadState(false)
+        getPdfsFiles('', '', 'STATE_NEGATIVE_DEBTS')
         getPdfsFiles(consultantCPF, '', 'STATE_NEGATIVE_DEBTS')
       }).catch(err => {
         setStateReloadState(false)
@@ -211,6 +218,7 @@ function ConsultList() {
       const cpfAndNameParam = { "cpf": consultantCPF, "name": consultantName }
       api.post(`/consult/jfpe`, cpfAndNameParam).then(data => {
         setJfpeReloadState(false);
+        getPdfsFiles('', '', 'JFPE_NEGATIVE_DEBTS')
         getPdfsFiles(consultantCPF, '', 'JFPE_NEGATIVE_DEBTS')
       }).catch(err => {
         setJfpeReloadState(false);
